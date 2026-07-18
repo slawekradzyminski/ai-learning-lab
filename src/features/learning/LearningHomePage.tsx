@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Activity, ArrowRight, Axis3d, Binary, Bot, BrainCircuit, Cpu, FlaskConical, GitBranch, Hand, Layers3, MemoryStick, Network, PanelTop, Presentation, ScanLine, ShieldCheck, Sigma, TextCursorInput, TrendingDown, UsersRound, Webhook } from 'lucide-react';
+import { Activity, ArrowRight, Axis3d, Binary, BookOpenText, Bot, BrainCircuit, Cpu, FlaskConical, GitBranch, Hand, Layers3, LibraryBig, MemoryStick, Network, PanelTop, Presentation, ScanLine, ShieldCheck, Sigma, TextCursorInput, TrendingDown, UsersRound, Webhook } from 'lucide-react';
 import { Badge } from '../../components/ui/badge';
 import { LEARNING_LABS, LEARNING_SECTIONS, getSectionLabs, getSectionTracks, type LearningLabId } from './learningCatalog';
 
@@ -55,7 +55,9 @@ export function LearningHomePage() {
               <div><p className={`text-xs font-semibold uppercase tracking-[0.24em] ${agentSection ? 'text-amber-700' : 'text-sky-700'}`}>{section.label} · {labs.length} labs</p><h2 className="mt-2 text-3xl font-semibold text-slate-950 md:text-4xl">{section.title}</h2><p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">{section.description}</p></div>
               <div className="mt-5 flex shrink-0 flex-wrap gap-2 md:mt-0">
                 <Link to={labs[0].route} className={`inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold text-white ${agentSection ? 'bg-amber-600 hover:bg-amber-700' : 'bg-sky-600 hover:bg-sky-700'}`} data-testid={`learning-start-${section.id}`}>Start section <ArrowRight className="h-4 w-4" /></Link>
+                <Link to={section.materialsRoute} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-950 bg-slate-950 px-5 text-sm font-semibold text-white hover:bg-slate-800" data-testid={`learning-materials-${section.id}`}><LibraryBig className="h-4 w-4" /> All materials</Link>
                 <Link to={section.slidesRoute} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-stone-300 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-stone-50" data-testid={`learning-slides-${section.id}`}><Presentation className="h-4 w-4" /> Instructor slides</Link>
+                <Link to={section.guideRoute} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-stone-300 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-stone-50" data-testid={`learning-theory-${section.id}`}><BookOpenText className="h-4 w-4" /> Theory guide</Link>
               </div>
             </div>
 

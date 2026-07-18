@@ -2,6 +2,8 @@
 
 A standalone, instructor-friendly application for practical AI training. It contains 19 interactive labs, two presentation decks, and researched companion guides covering language models and AI agent systems.
 
+See the exact migrated inventory in [`docs/CONTENT_INVENTORY.md`](docs/CONTENT_INVENTORY.md). The application also exposes complete materials indexes at `/learn/how-llm-works/materials` and `/learn/how-ai-agent-works/materials`.
+
 The lab is intentionally independent of the e-commerce demo that originally hosted it. Guided exercises run entirely in the browser. Tokenization can use the pinned Bonsai base tokenizer. The next-token, token-count, and embedding exercises can additionally call the awesome-localstack backend when a live runtime is available.
 
 ## Learning design
@@ -25,7 +27,9 @@ Useful checks:
 
 ```bash
 npm test
+npm run test:e2e
 npm run build
+npm run audit:extraction
 ```
 
 ## Live runtime configuration
@@ -51,6 +55,8 @@ The image supports both direct `/learn/` access and gateway access where the `/l
 ## Repository boundary
 
 - `src/features/learning/` contains the curriculum, labs, slides, theory, and tests.
+- `docs/CONTENT_INVENTORY.md` records the complete content and host-binding replacement contract.
+- `docs/history/` preserves the Phase 4–7 implementation plans that led to the current curriculum.
 - `src/lib/api.ts` is the deliberately small live-runtime adapter.
 - `public/learning-models/bonsai-tokenizer/` pins the browser tokenizer assets and provenance.
 - `nginx/default.conf` provides SPA routing and immutable asset caching.

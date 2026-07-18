@@ -5,6 +5,7 @@ import { AgentLoopLabPage } from './features/learning/AgentLoopLabPage';
 import { AttentionLabPage } from './features/learning/AttentionLabPage';
 import { BackpropagationLabPage } from './features/learning/BackpropagationLabPage';
 import { ContextHarnessLabPage } from './features/learning/ContextHarnessLabPage';
+import { CourseMaterialsPage } from './features/learning/CourseMaterialsPage';
 import { ConvolutionLabPage } from './features/learning/ConvolutionLabPage';
 import { DepthLabPage } from './features/learning/DepthLabPage';
 import { DigitLabPage } from './features/learning/DigitLabPage';
@@ -61,8 +62,10 @@ export function AppRoutes() {
         <Route path="training-slides" element={<TrainingSlidesPage />} />
         <Route path="how-llm-works/slides" element={<TrainingSlidesPage />} />
         <Route path="how-llm-works/guide" element={<Guide curriculum="llm" />} />
+        <Route path="how-llm-works/materials" element={<CourseMaterialsPage curriculum="llm" />} />
         <Route path="how-ai-agent-works/slides" element={<TrainingSlidesPage curriculum="agent" />} />
         <Route path="how-ai-agent-works/guide" element={<Guide curriculum="agent" />} />
+        <Route path="how-ai-agent-works/materials" element={<CourseMaterialsPage curriculum="agent" />} />
         <Route path="*" element={<Navigate to="/learn" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/learn" replace />} />

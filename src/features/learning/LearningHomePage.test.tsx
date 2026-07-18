@@ -13,6 +13,10 @@ describe('LearningHomePage', () => {
     expect(screen.getAllByTestId(/^learning-path-/)).toHaveLength(19);
     expect(screen.getByTestId('learning-slides-llm')).toHaveAttribute('href', '/learn/how-llm-works/slides?slide=1');
     expect(screen.getByTestId('learning-slides-agent')).toHaveAttribute('href', '/learn/how-ai-agent-works/slides?slide=1');
+    expect(screen.getByTestId('learning-theory-llm')).toHaveAttribute('href', '/learn/how-llm-works/guide?slide=1');
+    expect(screen.getByTestId('learning-theory-agent')).toHaveAttribute('href', '/learn/how-ai-agent-works/guide?slide=1');
+    expect(screen.getByTestId('learning-materials-llm')).toHaveAttribute('href', '/learn/how-llm-works/materials');
+    expect(screen.getByTestId('learning-materials-agent')).toHaveAttribute('href', '/learn/how-ai-agent-works/materials');
     expect(screen.getByTestId('learning-track-language')).toBeInTheDocument();
     expect(screen.getByTestId('learning-track-semantic')).toBeInTheDocument();
     expect(screen.getByTestId('learning-track-neural')).toBeInTheDocument();

@@ -50,6 +50,8 @@ export const LEARNING_SECTIONS = [
     title: 'How LLM works?',
     description: 'Look inside representation, inference, learning, and perception—one inspectable calculation at a time.',
     slidesRoute: '/learn/how-llm-works/slides?slide=1',
+    guideRoute: '/learn/how-llm-works/guide?slide=1',
+    materialsRoute: '/learn/how-llm-works/materials',
   },
   {
     id: 'agent',
@@ -57,6 +59,8 @@ export const LEARNING_SECTIONS = [
     title: 'How AI Agent works?',
     description: 'Step outside the model and inspect the harness that supplies context, executes tools, enforces boundaries, and repeats.',
     slidesRoute: '/learn/how-ai-agent-works/slides?slide=1',
+    guideRoute: '/learn/how-ai-agent-works/guide?slide=1',
+    materialsRoute: '/learn/how-ai-agent-works/materials',
   },
 ] as const satisfies ReadonlyArray<{
   id: LearningSectionId;
@@ -64,6 +68,8 @@ export const LEARNING_SECTIONS = [
   title: string;
   description: string;
   slidesRoute: string;
+  guideRoute: string;
+  materialsRoute: string;
 }>;
 
 export const LEARNING_LABS: LearningLab[] = [
