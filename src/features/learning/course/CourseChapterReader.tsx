@@ -4,7 +4,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import 'katex/dist/katex.min.css';
-import { MermaidDiagram } from '../trainingGuides/MermaidDiagram';
+import { MermaidDiagram } from '../components/MermaidDiagram';
 import type { CourseTheory, CourseTheoryDiagram } from './content/theoryTypes';
 
 const markdownPlugins = [remarkGfm, remarkMath];

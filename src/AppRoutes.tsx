@@ -1,4 +1,3 @@
-import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AgentEvalsLabPage } from './features/learning/AgentEvalsLabPage';
 import { AgentLoopLabPage } from './features/learning/AgentLoopLabPage';
@@ -22,22 +21,12 @@ import { ResidualStreamLabPage } from './features/learning/ResidualStreamLabPage
 import { SubagentsLabPage } from './features/learning/SubagentsLabPage';
 import { TokenizationLabPage } from './features/learning/TokenizationLabPage';
 import { ToolBoundariesLabPage } from './features/learning/ToolBoundariesLabPage';
-import { TrainingSlidesPage } from './features/learning/TrainingSlidesPage';
 import { AuthBoundary } from './auth/AuthBoundary';
 import { LlmCoursePage } from './features/learning/course/LlmCoursePage';
 import { LLM_COURSE_LESSONS, getLlmCourseRoute } from './features/learning/course/llmCourseCatalog';
 import { AgentCoursePage } from './features/learning/agentCourse/AgentCoursePage';
 import { AGENT_COURSE_LESSONS, getAgentCourseRoute } from './features/learning/agentCourse/agentCourseCatalog';
-
-const TrainingGuidePage = lazy(() => import('./features/learning/TrainingGuidePage').then((module) => ({ default: module.TrainingGuidePage })));
-
-function Guide({ curriculum }: { curriculum: 'llm' | 'agent' }) {
-  return (
-    <Suspense fallback={<div className="min-h-[50svh] animate-pulse bg-white/40" aria-label="Loading guide" />}>
-      <TrainingGuidePage curriculum={curriculum} />
-    </Suspense>
-  );
-}
+import { LegacyCourseMaterialRedirect } from './features/learning/teachingMoments/LegacyCourseMaterialRedirect';
 
 export function AppRoutes() {
   return (
@@ -64,16 +53,16 @@ export function AppRoutes() {
         <Route path="hooks-lifecycle" element={<HooksLifecycleLabPage />} />
         <Route path="tool-boundaries" element={<ToolBoundariesLabPage />} />
         <Route path="agent-evals" element={<AgentEvalsLabPage />} />
-        <Route path="training-slides" element={<TrainingSlidesPage />} />
-        <Route path="how-llm-works/slides" element={<TrainingSlidesPage />} />
+        <Route path="training-slides" element={<LegacyCourseMaterialRedirect curriculum="llm" />} />
+        <Route path="how-llm-works/slides" element={<LegacyCourseMaterialRedirect curriculum="llm" />} />
         <Route path="how-llm-works/course" element={<Navigate to={getLlmCourseRoute(LLM_COURSE_LESSONS[0].id)} replace />} />
         <Route path="how-llm-works/course/:lessonId" element={<LlmCoursePage />} />
-        <Route path="how-llm-works/guide" element={<Guide curriculum="llm" />} />
+        <Route path="how-llm-works/guide" element={<LegacyCourseMaterialRedirect curriculum="llm" notes />} />
         <Route path="how-llm-works/materials" element={<CourseMaterialsPage curriculum="llm" />} />
-        <Route path="how-ai-agent-works/slides" element={<TrainingSlidesPage curriculum="agent" />} />
+        <Route path="how-ai-agent-works/slides" element={<LegacyCourseMaterialRedirect curriculum="agent" />} />
         <Route path="how-ai-agent-works/course" element={<Navigate to={getAgentCourseRoute(AGENT_COURSE_LESSONS[0].id)} replace />} />
         <Route path="how-ai-agent-works/course/:lessonId" element={<AgentCoursePage />} />
-        <Route path="how-ai-agent-works/guide" element={<Guide curriculum="agent" />} />
+        <Route path="how-ai-agent-works/guide" element={<LegacyCourseMaterialRedirect curriculum="agent" notes />} />
         <Route path="how-ai-agent-works/materials" element={<CourseMaterialsPage curriculum="agent" />} />
         <Route path="*" element={<Navigate to="/learn" replace />} />
       </Route>

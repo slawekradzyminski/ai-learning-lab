@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 
-export function MermaidDiagram({ chart, testId = 'training-guide-mermaid' }: { chart: string; testId?: string }) {
+export function MermaidDiagram({ chart, testId = 'course-mermaid-diagram' }: { chart: string; testId?: string }) {
   const reactId = useId();
   const [svg, setSvg] = useState('');
   const [error, setError] = useState(false);
@@ -16,7 +16,7 @@ export function MermaidDiagram({ chart, testId = 'training-guide-mermaid' }: { c
           theme: 'neutral',
           fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
         });
-        const id = `training-guide-${reactId.replace(/[^a-zA-Z0-9]/g, '')}`;
+        const id = `course-diagram-${reactId.replace(/[^a-zA-Z0-9]/g, '')}`;
         const result = await mermaid.render(id, chart.trim());
         if (active) setSvg(result.svg);
       } catch {

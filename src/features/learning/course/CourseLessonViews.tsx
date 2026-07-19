@@ -1,8 +1,10 @@
-import { BookOpen, FlaskConical, Presentation } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { BookOpen, FlaskConical } from 'lucide-react';
 import { LearningCheckpoint } from '../LearningCheckpoint';
+import { LessonDebriefMoment, LessonTeachingSequence } from '../teachingMoments/TeachingMomentCanvas';
 import { CourseLessonActivity } from './CourseLessonActivity';
 import { CourseLessonNotes } from './CourseLessonNotes';
+import { LLM_LESSON_MOMENTS } from './content/llmLessonMoments';
+import { getLlmCourseRoute } from './llmCourseCatalog';
 import type { LlmCourseLesson } from './llmCourseCatalog';
 
 function RepresentationContract({ lesson }: { lesson: LlmCourseLesson }) {
@@ -18,15 +20,18 @@ function RepresentationContract({ lesson }: { lesson: LlmCourseLesson }) {
 }
 
 export function CourseLearnView({ lesson, onComplete }: { lesson: LlmCourseLesson; onComplete: () => void }) {
+  const teachingMoments = LLM_LESSON_MOMENTS[lesson.id];
   return (
     <div className="space-y-10 learning-enter" data-testid="course-view-learn">
       <RepresentationContract lesson={lesson} />
       <nav className="flex flex-wrap items-center gap-x-7 gap-y-3 border-b border-stone-200 pb-5 text-xs font-semibold" aria-label="Lesson materials">
+        <a href={`#lesson-moment-${teachingMoments.moments[0].id}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-700">Teaching sequence</a>
         <a href="#lesson-experiment" className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-700"><FlaskConical className="h-3.5 w-3.5" /> Experiment</a>
         <a href="#lesson-theory" className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-700"><BookOpen className="h-3.5 w-3.5" /> Complete theory</a>
-        {lesson.slide ? <Link to={`/learn/how-llm-works/slides?slide=${lesson.slide}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-700"><Presentation className="h-3.5 w-3.5" /> Presenter slides</Link> : null}
       </nav>
+      <LessonTeachingSequence lesson={teachingMoments} accent="sky" courseRoute={getLlmCourseRoute(lesson.id)} />
       <div id="lesson-experiment" className="scroll-mt-20"><CourseLessonActivity lesson={lesson} /></div>
+      <LessonDebriefMoment lesson={teachingMoments} accent="sky" />
       <div id="lesson-theory" className="scroll-mt-20"><CourseLessonNotes lesson={lesson} /></div>
       <LearningCheckpoint id={`course-${lesson.id}`} eyebrow="Check your understanding" {...lesson.checkpoint} onCorrect={onComplete} compact />
       <p className="border-l-2 border-sky-500 pl-5 text-sm leading-7 text-slate-600" data-testid="course-forward-bridge"><span className="font-semibold text-slate-900">Next:</span> {lesson.bridgeForward}</p>

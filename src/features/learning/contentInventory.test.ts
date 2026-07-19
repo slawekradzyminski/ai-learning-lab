@@ -1,26 +1,27 @@
 import { describe, expect, test } from 'vitest';
 import { LEARNING_LABS } from './learningCatalog';
-import { buildTrainingGuide } from './trainingGuides/buildTrainingGuide';
-import { TRAINING_SLIDES } from './trainingSlideCatalog';
-import { AGENT_TRAINING_SLIDES } from './trainingSlides/agentCatalog';
+import { AGENT_COURSE_LESSONS } from './agentCourse/agentCourseCatalog';
+import { AGENT_LESSON_MOMENTS } from './agentCourse/content/agentLessonMoments';
+import { LLM_COURSE_LESSONS } from './course/llmCourseCatalog';
+import { LLM_LESSON_MOMENTS } from './course/content/llmLessonMoments';
 
 describe('standalone content inventory', () => {
-  test('keeps every lab connected to four teaching slides and matching theory', () => {
-    const allSlides = [...TRAINING_SLIDES, ...AGENT_TRAINING_SLIDES];
-    const allGuideSections = [
-      ...buildTrainingGuide(TRAINING_SLIDES, 'llm'),
-      ...buildTrainingGuide(AGENT_TRAINING_SLIDES, 'agent'),
+  test('keeps every canonical lesson connected to four visible semantic teaching moments', () => {
+    const lessonPackages = [
+      ...LLM_COURSE_LESSONS.map((lesson) => ({ lesson, lessonMoments: LLM_LESSON_MOMENTS[lesson.id] })),
+      ...AGENT_COURSE_LESSONS.map((lesson) => ({ lesson, lessonMoments: AGENT_LESSON_MOMENTS[lesson.id] })),
     ];
-
     expect(LEARNING_LABS).toHaveLength(19);
-    expect(allSlides).toHaveLength(86);
-    expect(allGuideSections).toHaveLength(86);
-    expect(allSlides.filter(({ kind }) => kind === 'exercise')).toHaveLength(19);
+    expect(lessonPackages).toHaveLength(18);
+    expect(lessonPackages.flatMap(({ lessonMoments }) => lessonMoments.moments)).toHaveLength(72);
 
-    for (const lab of LEARNING_LABS) {
-      const chapter = allSlides.filter(({ labId }) => labId === lab.id);
-      expect(chapter.map(({ kind }) => kind), lab.id).toEqual(['hook', 'mechanism', 'exercise', 'debrief']);
-      expect(allGuideSections.filter(({ id }) => id.startsWith(`${lab.id}-`)), lab.id).toHaveLength(4);
+    for (const { lesson, lessonMoments } of lessonPackages) {
+      expect(lessonMoments.lessonId).toBe(lesson.id);
+      expect(lessonMoments.moments.map(({ kind }) => kind), lesson.id).toEqual(['hook', 'mechanism', 'practice', 'debrief']);
+      for (const moment of lessonMoments.moments) {
+        expect(moment.id).toBe(`${lesson.id}/${moment.kind}`);
+        expect(moment.presenterCue).toBeTruthy();
+      }
     }
   });
 

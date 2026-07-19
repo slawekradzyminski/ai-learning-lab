@@ -8,6 +8,38 @@ const targetFeature = resolve(targetRoot, 'src/features/learning');
 const extractionBaseline = 'a8bd642';
 const featurePrefix = 'src/features/learning/';
 
+const retiredParallelCourseFiles = new Set([
+  'TrainingGuidePage.test.tsx',
+  'TrainingGuidePage.tsx',
+  'TrainingSlidesPage.test.tsx',
+  'TrainingSlidesPage.tsx',
+  'trainingGuides/MermaidDiagram.tsx',
+  'trainingGuides/agentTheory.ts',
+  'trainingGuides/buildTrainingGuide.test.ts',
+  'trainingGuides/buildTrainingGuide.ts',
+  'trainingGuides/catalog.ts',
+  'trainingGuides/llmTheory.ts',
+  'trainingGuides/types.ts',
+  'trainingSlideCatalog.test.tsx',
+  'trainingSlideCatalog.tsx',
+  'trainingSlides/AgentHookVisual.tsx',
+  'trainingSlides/LanguageHookVisual.tsx',
+  'trainingSlides/NeuralHookVisual.tsx',
+  'trainingSlides/agentCatalog.test.tsx',
+  'trainingSlides/agentCatalog.ts',
+  'trainingSlides/agentWorkshopSlides.tsx',
+  'trainingSlides/catalog.ts',
+  'trainingSlides/createLabSlides.tsx',
+  'trainingSlides/narratives/agentNarratives.ts',
+  'trainingSlides/narratives/languageNarratives.ts',
+  'trainingSlides/narratives/learningNarratives.ts',
+  'trainingSlides/narratives/residualNarrative.ts',
+  'trainingSlides/narratives/semanticNarratives.ts',
+  'trainingSlides/narratives/visionNarratives.ts',
+  'trainingSlides/types.ts',
+  'trainingSlides/workshopSlides.tsx',
+]);
+
 const intentionalFeatureDifferences = new Set([
   'AgentEvalsLabPage.test.tsx',
   'AgentLoopLabPage.test.tsx',
@@ -63,6 +95,12 @@ const intentionalFeatureDifferences = new Set([
 ]);
 
 const standaloneAdditions = new Set([
+  'components/MermaidDiagram.tsx',
+  'teachingMoments/LegacyCourseMaterialRedirect.test.tsx',
+  'teachingMoments/LegacyCourseMaterialRedirect.tsx',
+  'teachingMoments/LessonPresentation.tsx',
+  'teachingMoments/TeachingMomentCanvas.tsx',
+  'teachingMoments/types.ts',
   'agentCourse/AgentCourseActivity.tsx',
   'agentCourse/AgentCourseCapstoneActivity.tsx',
   'agentCourse/AgentCourseLessonNotes.tsx',
@@ -78,6 +116,7 @@ const standaloneAdditions = new Set([
   'agentCourse/agentCourseTypes.ts',
   'agentCourse/content/agentCourseBible.ts',
   'agentCourse/content/agentLessonTheory.ts',
+  'agentCourse/content/agentLessonMoments.ts',
   'agentCourse/content/chapterLoaders.ts',
   'agentCourse/content/chapters/agentEvals.ts',
   'agentCourse/content/chapters/agentLoop.ts',
@@ -129,6 +168,7 @@ const standaloneAdditions = new Set([
   'course/courseScenario.ts',
   'course/gloveWordEmbeddings.ts',
   'course/content/lessonTheory.ts',
+  'course/content/llmLessonMoments.ts',
   'course/content/chapters/attention.ts',
   'course/content/chapters/capstone.ts',
   'course/content/chapters/generationCache.ts',
@@ -189,14 +229,14 @@ function fail(label, values) {
 
 const sourceFiles = gitFiles(featurePrefix).map((file) => file.slice(featurePrefix.length));
 const targetFiles = await filesBelow(targetFeature);
-const missing = difference(sourceFiles, targetFiles);
+const missing = difference(sourceFiles, targetFiles).filter((file) => !retiredParallelCourseFiles.has(file));
 const unexpectedAdditions = difference(targetFiles, sourceFiles).filter((file) => !standaloneAdditions.has(file));
 fail('Source learning files missing from standalone repository', missing);
 fail('Unregistered standalone feature additions', unexpectedAdditions);
 
 const changed = [];
 for (const file of sourceFiles) {
-  if (intentionalFeatureDifferences.has(file)) continue;
+  if (intentionalFeatureDifferences.has(file) || retiredParallelCourseFiles.has(file)) continue;
   if (baselineSha(`${featurePrefix}${file}`) !== await sha(resolve(targetFeature, file))) changed.push(file);
 }
 fail('Unexpected content differences from the immutable extraction baseline', changed);
@@ -242,6 +282,7 @@ const report = {
   pinnedLearningAssets: sourceAssets.length,
   intentionalFeatureDifferences: intentionalFeatureDifferences.size,
   standaloneFeatureAdditions: standaloneAdditions.size,
+  retiredParallelCourseFiles: retiredParallelCourseFiles.size,
   status: 'complete',
 };
 

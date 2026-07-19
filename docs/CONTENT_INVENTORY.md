@@ -1,6 +1,15 @@
 # AI Learning Lab content inventory
 
-This document is the explicit extraction contract for the standalone application. The `/learn/` home page links to a complete materials index for each course, so labs, exercises, slides, and theory are directly discoverable.
+This document is the explicit extraction contract for the standalone application. The `/learn/` home page links to a complete materials index for each course, while each canonical lesson itself owns its teaching moments, activity, long-form theory, and assessment. Presentation is a rendering mode of that lesson content, not a separate course hidden behind the materials index.
+
+Every canonical lesson exposes four teaching moments in its normal learner flow:
+
+1. **Hook** — establishes the question and makes the learner predict an outcome.
+2. **Mechanism** — introduces the smallest model needed to perform the activity.
+3. **Practice brief** — frames the activity, its controls, and what evidence to collect.
+4. **Debrief** — interprets the observed result, corrects likely misconceptions, and connects forward.
+
+The same stable `lesson/moment` identifiers drive inline rendering and full-screen presentation mode. Presenter notes, discussion prompts, and timing cues remain contextual metadata on those moments. They do not create a second content sequence. Numeric slide query parameters belong only to legacy compatibility routes and must not couple lessons to deck positions.
 
 ## Canonical LLM learner path
 
@@ -17,7 +26,7 @@ This document is the explicit extraction contract for the standalone application
 9. Learning
 10. Capstone reconstruction
 
-Each lesson is one learner flow: question, representation change, experiment, visible plain-language explanation, misconception correction, checkpoint, and forward bridge. Optional notation and annotated sources stay behind quiet disclosures. Instructor material remains in the dedicated presentation deck instead of competing with the learner page. Browser-local completion state records progress. The deterministic glass-box lane and live Bonsai evidence remain explicitly distinguished inside the relevant explanations.
+Each lesson is one learner flow: question, representation change, visible hook and mechanism, practice brief, experiment, debrief, plain-language explanation, misconception correction, checkpoint, and forward bridge. Optional notation and annotated sources stay behind quiet disclosures. Full-screen presentation mode renders the same lesson-owned moments and reveals contextual presenter notes where appropriate. Browser-local completion state records progress. The deterministic glass-box lane and live Bonsai evidence remain explicitly distinguished inside the relevant explanations.
 
 The existing 19 labs remain directly addressable as the deeper exercise library. Semantic retrieval and neural-learning/vision remain optional branches rather than interruptions in the core transformer story.
 
@@ -34,20 +43,20 @@ The existing 19 labs remain directly addressable as the deeper exercise library.
 7. Agent evaluations
 8. Complete-system capstone
 
-Every lesson reuses the goal to research three laptops under €900 and write `laptop-comparison.md` without purchasing or contacting a vendor. The recurring scenario makes ownership visible: the model proposes, the harness selects context and mediates effects, tools interact with the environment, and evaluators inspect both the trace and terminal state. Each lesson combines its existing browser lab, a long-form chapter, diagrams, misconception clinic, exercises, glossary, checkpoint, presenter-slide link, and explicit forward bridge. Browser-local progress is independent from the LLM course.
+Every lesson reuses the goal to research three laptops under €900 and write `laptop-comparison.md` without purchasing or contacting a vendor. The recurring scenario makes ownership visible: the model proposes, the harness selects context and mediates effects, tools interact with the environment, and evaluators inspect both the trace and terminal state. Each lesson combines its existing browser lab, four visible teaching moments, a long-form chapter, diagrams, misconception clinic, exercises, glossary, checkpoint, contextual presenter notes, and explicit forward bridge. Full-screen presentation uses those same moments and stable identifiers. Browser-local progress is independent from the LLM course.
 
 ## Inventory summary
 
 | Material | LLM course | AI agents course | Total |
 |---|---:|---:|---:|
 | Interactive labs | 12 | 7 | 19 |
-| Instructor slides | 53 | 33 | 86 |
-| Slide-matched theory sections | 53 | 33 | 86 |
-| Practical exercise slides | 12 | 7 | 19 |
-| Learning feature test files |  |  | 57 |
+| Canonical teaching moments | 40 | 32 | 72 |
+| Contextual presenter cues | 40 | 32 | 72 |
+| Canonical practice moments | 10 | 8 | 18 |
+| Learning feature test files |  |  | 52 |
 | Pinned Bonsai tokenizer files |  |  | 4 |
 
-The current suite contains 170 unit and component tests across 57 test files, including structural quality gates for every canonical long-form chapter.
+The earlier extracted curriculum contained 86 detached presentation frames and 86 independently generated guide sections. Their useful claims, prompts, mechanisms, and debriefs have been absorbed into the 72 canonical lesson moments; the parallel deck and guide implementations were then retired. The current suite contains 160 unit and component tests across 53 test files, including 52 learning-feature test files and structural quality gates for every canonical long-form chapter and teaching sequence.
 
 ## LLM course
 
@@ -100,7 +109,9 @@ The current suite contains 170 unit and component tests across 57 test files, in
 - `/learn/how-ai-agent-works/slides?slide=1`
 - `/learn/how-ai-agent-works/guide?slide=1`
 
-Each materials page links every chapter to its interactive lab, question, mechanism, exercise, debrief, and matching theory section.
+The canonical course routes are the primary entry points. Legacy `/slides?slide=N` and `/guide?slide=N` URLs remain compatibility routes for existing bookmarks; they resolve into lesson-owned content and must not define curriculum order. Full-screen presentation should be entered from the relevant lesson and return to that same lesson and moment.
+
+Each materials page links every chapter to its interactive lab and canonical lesson package. Optional standalone labs remain discoverable there as secondary resources without interrupting the canonical learner path.
 
 ## Extraction audit
 
@@ -110,7 +121,7 @@ Run the automated comparison against the immutable initial extraction commit:
 npm run audit:extraction
 ```
 
-Commit `a8bd642` is the immutable extraction baseline that was verified against the original frontend before its learning implementation was removed. The audit fails when a baseline learning file, support component, tokenizer asset, or source test is missing or unexpectedly changed. It therefore remains reproducible without keeping a second copy of the source feature.
+Commit `a8bd642` is the immutable extraction baseline that was verified against the original frontend before its learning implementation was removed. The audit fails when baseline learning content, support components, tokenizer assets, or source tests are unexpectedly lost or changed. It explicitly records the retired parallel slide/guide implementation and its lesson-owned replacements, so the extraction remains reproducible without preserving obsolete duplicate surfaces.
 
 ## Host bindings intentionally replaced
 
@@ -124,4 +135,4 @@ The original `/learn` feature was embedded in a larger commerce application. The
 | React Query and commerce toast test wrapper | Minimal router-based learning test wrapper |
 | Commerce application shell | Dedicated course shell and complete-material indexes |
 
-These replacements remove unrelated dependencies without removing any lab, slide, theory section, exercise, or learning test. Live learning calls retain the same backend endpoint contract for next-token probabilities, token counts, and embeddings.
+These replacements preserve every lab, theory chapter, exercise, and teaching claim. Detached slide and guide implementations were removed only after their useful material had been migrated into canonical lesson moments. Live learning calls retain the same backend endpoint contract for next-token probabilities, token counts, and embeddings.

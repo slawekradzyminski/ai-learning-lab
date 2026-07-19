@@ -1,6 +1,6 @@
 # AI Learning Lab
 
-A standalone, instructor-friendly application for practical AI training. Its canonical ten-lesson LLM course follows one sentence through a transformer, while its canonical eight-lesson AI Agents course follows one bounded research goal through a controlled runtime. Nineteen standalone labs, two presentation decks, and researched companion guides provide additional practice.
+A standalone, instructor-friendly application for practical AI training. Its canonical ten-lesson LLM course follows one sentence through a transformer, while its canonical eight-lesson AI Agents course follows one bounded research goal through a controlled runtime. Nineteen standalone labs provide additional practice, while presentation and long-form theory are integrated into the canonical lessons instead of forming parallel courses.
 
 See the exact migrated inventory in [`docs/CONTENT_INVENTORY.md`](docs/CONTENT_INVENTORY.md). The application also exposes complete materials indexes at `/learn/how-llm-works/materials` and `/learn/how-ai-agent-works/materials`.
 
@@ -10,13 +10,17 @@ The lab is intentionally independent of the e-commerce demo that originally host
 
 - **One coherent LLM journey:** ten lessons reuse the sentence `The animal did not cross the street because it was too`, showing how its representation changes from text to tokens, vectors, contextual states, and a next-token distribution.
 - **One coherent agent journey:** eight lessons reuse a laptop-research task, showing how a goal becomes selected context, model proposals, policy decisions, bounded effects, evidence, a verified stop, and repeated evaluation.
+- **Four visible teaching moments:** every canonical lesson places its hook, mechanism, practice brief, and debrief directly in the learner flow around the interactive activity.
+- **One source, two rendering modes:** full-screen presentation mode renders those same lesson-owned teaching moments; it is not a detached deck with a separate sequence.
+- **Contextual presenter support:** presenter notes, prompts, and timing cues stay attached to the moment they explain and appear only when they are useful.
+- **Stable semantic navigation:** lesson and moment identifiers such as `attention/mechanism` define relationships; numeric slide positions are retained only for compatibility with old links.
 - **One learner flow:** experiment, visible plain-language explanation, misconception, checkpoint, and forward bridge stay in one coherent sequence; notation and annotated sources remain optional.
 - **Practical first:** begin with a user goal, inspect the mechanism, try it, and verify an observable outcome.
 - **Agents without a math tax:** the primary agent course focuses on product decisions, context, boundaries, recovery, and evaluation. Equations are not required to follow the course.
 - **Focused LLM mathematics:** equations remain where they explain a concrete model mechanism such as attention, loss, or gradient flow.
 - **Guided and live modes:** deterministic browser exercises make workshops reliable; selected labs can use Bonsai or another configured model.
 - **Authenticated platform surface:** `/learn/*` uses the existing awesome-localstack local-storage session and login return flow; it does not introduce a second cookie-based auth system.
-- **Source-backed:** theory guides link to primary papers, official Codex and Claude Code documentation, security guidance, and [The Welch Labs Illustrated Guide to AI](https://www.welchlabs.com/).
+- **Source-backed:** long-form lesson chapters link to primary papers, official Codex and Claude Code documentation, security guidance, and [The Welch Labs Illustrated Guide to AI](https://www.welchlabs.com/).
 
 ## Run locally
 
@@ -68,7 +72,7 @@ The image supports both direct `/learn/` access and gateway access where the `/l
 
 ## Repository boundary
 
-- `src/features/learning/` contains the curriculum, labs, slides, theory, and tests.
+- `src/features/learning/` contains the canonical lesson packages, shared teaching-moment and presentation renderers, standalone labs, long-form theory, and tests.
 - `docs/CONTENT_INVENTORY.md` records the complete content and host-binding replacement contract.
 - `docs/history/` preserves the Phase 4–7 implementation plans that led to the current curriculum.
 - `src/lib/api.ts` is the deliberately small live-runtime adapter.

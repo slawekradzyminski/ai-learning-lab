@@ -22,21 +22,6 @@ describe('LearningLayout', () => {
     expect(screen.getByTestId('back-to-awesome-localstack')).toHaveAttribute('data-navigation', 'document');
   });
 
-  test('gives the instructor deck a distraction-free layout', () => {
-    render(
-      <MemoryRouter initialEntries={['/learn/training-slides']}>
-        <Routes>
-          <Route path="/learn" element={<LearningLayout />}>
-            <Route path="training-slides" element={<p>Deck canvas</p>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByTestId('learning-slides-layout')).toHaveTextContent('Deck canvas');
-    expect(screen.queryByTestId('learning-subnav')).not.toBeInTheDocument();
-  });
-
   test('keeps agent labs in their own seven-item navigation', () => {
     render(
       <MemoryRouter initialEntries={['/learn/agent-loop']}>

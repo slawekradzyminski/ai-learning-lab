@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, RotateCcw } from 'lucide-react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { LessonPresentation } from '../teachingMoments/LessonPresentation';
 import { AGENT_COURSE_LESSONS, getAgentCourseLesson, getAgentCourseRoute, type AgentCourseLessonId } from './agentCourseCatalog';
 import { AgentCourseLessonView } from './AgentCourseLessonView';
 import { AgentCoursePipeline } from './AgentCoursePipeline';
 import { clearAgentCourseProgress, completeAgentLesson, readCompletedAgentLessons } from './agentCourseProgress';
 import { AGENT_COURSE_SCENARIO } from './content/agentCourseBible';
+import { AGENT_LESSON_MOMENTS } from './content/agentLessonMoments';
 
 export function AgentCoursePage() {
   const { lessonId } = useParams();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const lesson = getAgentCourseLesson(lessonId);
   const [completedIds, setCompletedIds] = useState<AgentCourseLessonId[]>(readCompletedAgentLessons);
   const lessonTitleRef = useRef<HTMLHeadingElement>(null);
@@ -18,12 +22,29 @@ export function AgentCoursePage() {
   const next = currentIndex >= 0 ? AGENT_COURSE_LESSONS[currentIndex + 1] : undefined;
 
   useEffect(() => {
+    if (location.hash) {
+      window.requestAnimationFrame?.(() => document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView());
+      return;
+    }
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     window.scrollTo?.({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     lessonTitleRef.current?.focus({ preventScroll: true });
-  }, [lesson?.id]);
+  }, [lesson?.id, location.hash]);
 
   if (!lesson) return <Navigate to={getAgentCourseRoute(AGENT_COURSE_LESSONS[0].id)} replace />;
+
+  if (searchParams.get('view') === 'present') {
+    return (
+      <LessonPresentation
+        curriculumLabel="How AI agents work"
+        lessons={AGENT_COURSE_LESSONS}
+        lesson={lesson}
+        momentsByLesson={AGENT_LESSON_MOMENTS}
+        getRoute={(id) => getAgentCourseRoute(id as AgentCourseLessonId)}
+        accent="amber"
+      />
+    );
+  }
 
   return (
     <div className="space-y-8 pb-10" data-testid="agent-course-page">

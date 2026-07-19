@@ -20,6 +20,12 @@ describe('LlmCoursePage', () => {
     renderCourse();
 
     expect(screen.getByTestId('course-lesson-title')).toHaveTextContent('What should follow');
+    expect(screen.getByTestId('lesson-teaching-sequence')).toBeInTheDocument();
+    expect(screen.getByTestId('teaching-moment-prediction-goal/hook')).toBeInTheDocument();
+    expect(screen.getByTestId('teaching-moment-prediction-goal/mechanism')).toBeInTheDocument();
+    expect(screen.getByTestId('teaching-moment-prediction-goal/practice')).toBeInTheDocument();
+    expect(screen.getByTestId('teaching-moment-prediction-goal/debrief')).toBeInTheDocument();
+    expect(screen.getByTestId('present-lesson')).toHaveAttribute('href', '/learn/how-llm-works/course/prediction-goal?view=present&moment=prediction-goal/hook');
     expect(screen.getByTestId('course-pipeline')).toHaveTextContent('Text becomes tokens');
     expect(screen.getAllByText(/The animal did not cross/).length).toBeGreaterThan(1);
 
@@ -31,6 +37,16 @@ describe('LlmCoursePage', () => {
     fireEvent.click(screen.getByTestId('course-prediction-goal-check'));
     expect(screen.getByTestId('course-progress')).toHaveTextContent('1/10');
     expect(screen.getByTestId('course-next')).toHaveAttribute('href', '/learn/how-llm-works/course/tokenization');
+  });
+
+  test('renders the same lesson moment in full-screen presentation mode', () => {
+    renderCourse('/learn/how-llm-works/course/attention?view=present&moment=attention/mechanism');
+
+    expect(screen.getByTestId('lesson-presentation')).toBeInTheDocument();
+    expect(screen.getByTestId('teaching-moment-attention/mechanism')).toHaveTextContent('Query, key, value');
+    expect(screen.getByTestId('presentation-exit')).toHaveAttribute('href', '/learn/how-llm-works/course/attention#lesson-moment-attention/mechanism');
+    fireEvent.click(screen.getByTestId('presentation-notes-toggle'));
+    expect(screen.getByTestId('presentation-notes')).toHaveTextContent('Presenter cue');
   });
 
   test('shows the essential explanation before the checkpoint and keeps sources optional', async () => {

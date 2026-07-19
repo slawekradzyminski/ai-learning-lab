@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import 'katex/dist/katex.min.css';
-import { MermaidDiagram } from '../trainingGuides/MermaidDiagram';
+import { MermaidDiagram } from '../components/MermaidDiagram';
 import { CourseChapterReader } from './CourseChapterReader';
 import { COURSE_CHAPTER_LOADERS } from './content/chapterLoaders';
 import type { CourseTheoryChapter } from './content/theoryTypes';

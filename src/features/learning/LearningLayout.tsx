@@ -17,7 +17,6 @@ export function LearningLayout() {
   const labNavigation = useRef<HTMLElement>(null);
   const activeLabLink = useRef<HTMLAnchorElement>(null);
   const currentLab = getLearningLab(location.pathname);
-  const isTrainingSlides = location.pathname === '/learn/training-slides' || location.pathname.endsWith('/slides');
   const isCourse = location.pathname.startsWith('/learn/how-llm-works/course') || location.pathname.startsWith('/learn/how-ai-agent-works/course');
   const sectionLabs = currentLab ? getSectionLabs(currentLab.section) : [];
   const section = currentLab ? LEARNING_SECTIONS.find(({ id }) => id === currentLab.section) : undefined;
@@ -33,10 +32,6 @@ export function LearningLayout() {
       behavior: 'auto',
     });
   }, [location.pathname]);
-
-  if (isTrainingSlides) {
-    return <div className="pb-6" data-testid="learning-slides-layout"><Outlet /></div>;
-  }
 
   if (isCourse) {
     return <div data-testid="learning-course-layout"><Outlet /></div>;

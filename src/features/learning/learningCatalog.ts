@@ -49,8 +49,6 @@ export const LEARNING_SECTIONS = [
     label: 'Part I',
     title: 'How LLM works?',
     description: 'Follow one unfinished sentence through a complete transformer pass, then branch into retrieval, learning foundations, and vision.',
-    slidesRoute: '/learn/how-llm-works/slides?slide=1',
-    guideRoute: '/learn/how-llm-works/guide?slide=1',
     materialsRoute: '/learn/how-llm-works/materials',
   },
   {
@@ -58,8 +56,6 @@ export const LEARNING_SECTIONS = [
     label: 'Part II',
     title: 'How AI Agent works?',
     description: 'Step outside the model and inspect the harness that supplies context, executes tools, enforces boundaries, and repeats.',
-    slidesRoute: '/learn/how-ai-agent-works/slides?slide=1',
-    guideRoute: '/learn/how-ai-agent-works/guide?slide=1',
     materialsRoute: '/learn/how-ai-agent-works/materials',
   },
 ] as const satisfies ReadonlyArray<{
@@ -67,8 +63,6 @@ export const LEARNING_SECTIONS = [
   label: string;
   title: string;
   description: string;
-  slidesRoute: string;
-  guideRoute: string;
   materialsRoute: string;
 }>;
 

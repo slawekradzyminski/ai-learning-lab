@@ -4,7 +4,7 @@ import { CourseChapterReader } from './CourseChapterReader';
 import { TOKEN_EMBEDDINGS_CHAPTER } from './content/chapters/tokenEmbeddings';
 import { FOUNDATION_THEORY } from './content/theoryFoundations';
 
-vi.mock('../trainingGuides/MermaidDiagram', () => ({
+vi.mock('../components/MermaidDiagram', () => ({
   MermaidDiagram: ({ testId }: { testId: string }) => <div data-testid={testId}>diagram</div>,
 }));
 
