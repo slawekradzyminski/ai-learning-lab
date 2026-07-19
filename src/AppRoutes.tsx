@@ -26,7 +26,6 @@ import { LlmCoursePage } from './features/learning/course/LlmCoursePage';
 import { LLM_COURSE_LESSONS, getLlmCourseRoute } from './features/learning/course/llmCourseCatalog';
 import { AgentCoursePage } from './features/learning/agentCourse/AgentCoursePage';
 import { AGENT_COURSE_LESSONS, getAgentCourseRoute } from './features/learning/agentCourse/agentCourseCatalog';
-import { LegacyCourseMaterialRedirect } from './features/learning/teachingMoments/LegacyCourseMaterialRedirect';
 
 export function AppRoutes() {
   return (
@@ -53,16 +52,11 @@ export function AppRoutes() {
         <Route path="hooks-lifecycle" element={<HooksLifecycleLabPage />} />
         <Route path="tool-boundaries" element={<ToolBoundariesLabPage />} />
         <Route path="agent-evals" element={<AgentEvalsLabPage />} />
-        <Route path="training-slides" element={<LegacyCourseMaterialRedirect curriculum="llm" />} />
-        <Route path="how-llm-works/slides" element={<LegacyCourseMaterialRedirect curriculum="llm" />} />
         <Route path="how-llm-works/course" element={<Navigate to={getLlmCourseRoute(LLM_COURSE_LESSONS[0].id)} replace />} />
         <Route path="how-llm-works/course/:lessonId" element={<LlmCoursePage />} />
-        <Route path="how-llm-works/guide" element={<LegacyCourseMaterialRedirect curriculum="llm" notes />} />
         <Route path="how-llm-works/materials" element={<CourseMaterialsPage curriculum="llm" />} />
-        <Route path="how-ai-agent-works/slides" element={<LegacyCourseMaterialRedirect curriculum="agent" />} />
         <Route path="how-ai-agent-works/course" element={<Navigate to={getAgentCourseRoute(AGENT_COURSE_LESSONS[0].id)} replace />} />
         <Route path="how-ai-agent-works/course/:lessonId" element={<AgentCoursePage />} />
-        <Route path="how-ai-agent-works/guide" element={<LegacyCourseMaterialRedirect curriculum="agent" notes />} />
         <Route path="how-ai-agent-works/materials" element={<CourseMaterialsPage curriculum="agent" />} />
         <Route path="*" element={<Navigate to="/learn" replace />} />
       </Route>

@@ -13,7 +13,7 @@ The lab is intentionally independent of the e-commerce demo that originally host
 - **Four visible teaching moments:** every canonical lesson places its hook, mechanism, practice brief, and debrief directly in the learner flow around the interactive activity.
 - **One source, two rendering modes:** full-screen presentation mode renders those same lesson-owned teaching moments; it is not a detached deck with a separate sequence.
 - **Contextual presenter support:** presenter notes, prompts, and timing cues stay attached to the moment they explain and appear only when they are useful.
-- **Stable semantic navigation:** lesson and moment identifiers such as `attention/mechanism` define relationships; numeric slide positions are retained only for compatibility with old links.
+- **Stable semantic navigation:** lesson and moment identifiers such as `attention/mechanism` define presentation order and return links without numeric deck positions.
 - **One learner flow:** experiment, visible plain-language explanation, misconception, checkpoint, and forward bridge stay in one coherent sequence; notation and annotated sources remain optional.
 - **Practical first:** begin with a user goal, inspect the mechanism, try it, and verify an observable outcome.
 - **Agents without a math tax:** the primary agent course focuses on product decisions, context, boundaries, recovery, and evaluation. Equations are not required to follow the course.

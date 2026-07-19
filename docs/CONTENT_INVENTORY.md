@@ -9,7 +9,7 @@ Every canonical lesson exposes four teaching moments in its normal learner flow:
 3. **Practice brief** — frames the activity, its controls, and what evidence to collect.
 4. **Debrief** — interprets the observed result, corrects likely misconceptions, and connects forward.
 
-The same stable `lesson/moment` identifiers drive inline rendering and full-screen presentation mode. Presenter notes, discussion prompts, and timing cues remain contextual metadata on those moments. They do not create a second content sequence. Numeric slide query parameters belong only to legacy compatibility routes and must not couple lessons to deck positions.
+The same stable `lesson/moment` identifiers drive inline rendering and full-screen presentation mode. Presenter notes, discussion prompts, and timing cues remain contextual metadata on those moments. They do not create a second content sequence or depend on numeric deck positions.
 
 ## Canonical LLM learner path
 
@@ -53,10 +53,10 @@ Every lesson reuses the goal to research three laptops under €900 and write `l
 | Canonical teaching moments | 40 | 32 | 72 |
 | Contextual presenter cues | 40 | 32 | 72 |
 | Canonical practice moments | 10 | 8 | 18 |
-| Learning feature test files |  |  | 52 |
+| Learning feature test files |  |  | 51 |
 | Pinned Bonsai tokenizer files |  |  | 4 |
 
-The earlier extracted curriculum contained 86 detached presentation frames and 86 independently generated guide sections. Their useful claims, prompts, mechanisms, and debriefs have been absorbed into the 72 canonical lesson moments; the parallel deck and guide implementations were then retired. The current suite contains 160 unit and component tests across 53 test files, including 52 learning-feature test files and structural quality gates for every canonical long-form chapter and teaching sequence.
+The earlier extracted curriculum contained 86 detached presentation frames and 86 independently generated guide sections. Their useful claims, prompts, mechanisms, and debriefs have been absorbed into the 72 canonical lesson moments; the parallel deck and guide implementations were then retired. The current suite contains 158 unit and component tests across 52 test files, including 51 learning-feature test files and structural quality gates for every canonical long-form chapter and teaching sequence.
 
 ## LLM course
 
@@ -102,14 +102,11 @@ The earlier extracted curriculum contained 86 detached presentation frames and 8
 ## Direct material routes
 
 - `/learn/how-llm-works/materials`
-- `/learn/how-llm-works/slides?slide=1`
-- `/learn/how-llm-works/guide?slide=1`
+- `/learn/how-llm-works/course/prediction-goal`
 - `/learn/how-ai-agent-works/materials`
 - `/learn/how-ai-agent-works/course/agent-loop`
-- `/learn/how-ai-agent-works/slides?slide=1`
-- `/learn/how-ai-agent-works/guide?slide=1`
 
-The canonical course routes are the primary entry points. Legacy `/slides?slide=N` and `/guide?slide=N` URLs remain compatibility routes for existing bookmarks; they resolve into lesson-owned content and must not define curriculum order. Full-screen presentation should be entered from the relevant lesson and return to that same lesson and moment.
+These canonical course and materials routes are the only entry points. Full-screen presentation is entered from the relevant lesson and returns to that same lesson and moment.
 
 Each materials page links every chapter to its interactive lab and canonical lesson package. Optional standalone labs remain discoverable there as secondary resources without interrupting the canonical learner path.
 
@@ -121,7 +118,7 @@ Run the automated comparison against the immutable initial extraction commit:
 npm run audit:extraction
 ```
 
-Commit `a8bd642` is the immutable extraction baseline that was verified against the original frontend before its learning implementation was removed. The audit fails when baseline learning content, support components, tokenizer assets, or source tests are unexpectedly lost or changed. It explicitly records the retired parallel slide/guide implementation and its lesson-owned replacements, so the extraction remains reproducible without preserving obsolete duplicate surfaces.
+Commit `a8bd642` is the immutable extraction baseline that was verified against the original frontend before its learning implementation was removed. The audit fails when baseline learning content, support components, tokenizer assets, or source tests are unexpectedly lost or changed. It explicitly records the retired parallel slide/guide implementation and the lesson-owned replacements, so the extraction remains reproducible without preserving obsolete duplicate surfaces or routes.
 
 ## Host bindings intentionally replaced
 
