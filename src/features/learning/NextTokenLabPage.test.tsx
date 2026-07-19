@@ -32,6 +32,13 @@ describe('NextTokenLabPage', () => {
     expect(screen.getByTestId('next-token-loss-feedback')).toHaveTextContent('Correct');
   });
 
+  test('hides the unsupported live source in guided-only builds', () => {
+    renderWithProviders(<NextTokenLabPage liveRuntimeEnabled={false} />);
+
+    expect(screen.getByRole('button', { name: 'Offline example' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Live model' })).not.toBeInTheDocument();
+  });
+
   test('runs the exact live request and shows honest top-k provenance', async () => {
     vi.mocked(ollama.getLearningNextToken).mockResolvedValue({
       source: 'ollama-live',

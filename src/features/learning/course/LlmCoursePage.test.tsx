@@ -94,10 +94,12 @@ describe('LlmCoursePage', () => {
     expect(screen.getByTestId('embedding-initial-state')).toHaveTextContent('[0.72, -0.18]');
     expect(screen.getByTestId('word-embedding-explorer-closed')).toHaveTextContent('real 50D vectors');
     fireEvent.click(screen.getByTestId('open-word-embedding-explorer'));
-    expect(await screen.findByTestId('word-embedding-explorer', {}, { timeout: 5_000 })).toHaveTextContent('181 words');
+    expect(await screen.findByTestId('word-embedding-explorer', {}, { timeout: 15_000 })).toHaveTextContent('181 words');
     expect(screen.getAllByTestId(/^word-embedding-point-/)).toHaveLength(11);
-    expect(screen.queryByTestId('embedding-vector-heatmap')).not.toBeInTheDocument();
+    expect(screen.getByTestId('embedding-vector-heatmap')).toHaveTextContent('Vector fingerprint');
     expect(screen.getByTestId('word-embedding-explorer')).toHaveTextContent('Only the relevant neighborhood is drawn');
     expect(screen.getByTestId('word-embedding-explorer')).toHaveTextContent('focused 3D PCA view');
-  });
+    fireEvent.click(screen.getByTestId('toggle-glove-embedding-space'));
+    expect(screen.getAllByTestId(/^word-embedding-point-/)).toHaveLength(181);
+  }, 15_000);
 });

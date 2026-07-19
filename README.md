@@ -25,7 +25,7 @@ The lab is intentionally independent of the e-commerce demo that originally host
 ## Run locally
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -36,6 +36,7 @@ Useful checks:
 ```bash
 npm test
 npm run test:e2e
+npm run test:e2e:course
 npm run build
 npm run audit:extraction
 ```
@@ -47,9 +48,10 @@ Copy `.env.example` to `.env.local` when the live exercises should use a separat
 ```dotenv
 VITE_AI_API_BASE_URL=http://localhost:8080
 VITE_DEFAULT_OLLAMA_MODEL=hf.co/prism-ml/Bonsai-27B-gguf:Q1_0
+VITE_AI_LIVE_RUNTIME_ENABLED=true
 ```
 
-When the app is served through the awesome-localstack gateway, leave `VITE_AI_API_BASE_URL` empty. Requests then use the same origin at `/api/v1/ollama/learning/*`. The Lab validates the platform session through `/api/v1/users/me`; anonymous deep links move to the commerce login with a safe `returnTo`, then return to the original Lab route after sign-in. The existing JWT and refresh-token keys remain in `localStorage`, and credentials are never compiled into the browser bundle. Guided modes remain available if live endpoints are unavailable.
+When the app is served through the awesome-localstack gateway, leave `VITE_AI_API_BASE_URL` empty. Requests then use the same origin at `/api/v1/ollama/learning/*`. Set `VITE_AI_LIVE_RUNTIME_ENABLED=true` only for a build whose gateway also exposes those learning endpoints and `/api/v1/gpt2/*`; otherwise live controls stay hidden and the complete guided course remains available. The Lab validates the platform session through `/api/v1/users/me`; anonymous deep links move to the commerce login with a safe `returnTo`, then return to the original Lab route after sign-in. The existing JWT and refresh-token keys remain in `localStorage`, and credentials are never compiled into the browser bundle.
 
 Run the opt-in browser check against a full stack with real Bonsai:
 
@@ -70,6 +72,14 @@ docker run --rm -p 8083:80 ai-learning-lab:local
 
 The image supports both direct `/learn/` access and gateway access where the `/learn/` prefix is stripped before proxying.
 
+The Dockerfile defaults to guided-only mode for production safety. A full local stack that supplies the private learning adapters should build with `--build-arg VITE_AI_LIVE_RUNTIME_ENABLED=true`.
+
+### Release images
+
+CI verifies the unit suite, production build, extraction audit, standalone course browser contract, and a running image on both `/learn/` and a deep lesson route. The separate publish workflow is inert during ordinary branch pushes: it publishes multi-platform `linux/amd64` and `linux/arm64` images to `ghcr.io/slawekradzyminski/ai-learning-lab` only for a `vX.Y.Z` tag or an explicit manual dispatch. Tagged stable releases also move `latest`; manual and prerelease builds do not. This workflow is an additional release channel. Awesome LocalStack production currently references Docker Hub, and its deployment configuration remains the authority for the production registry and immutable image pin.
+
+Before using the GHCR image in any deployment, confirm that the package is publicly readable and update the corresponding Compose reference intentionally. Every deployment should use an immutable version tag or, preferably, a manifest digest rather than `latest`.
+
 ## Repository boundary
 
 - `src/features/learning/` contains the canonical lesson packages, shared teaching-moment and presentation renderers, standalone labs, long-form theory, and tests.
@@ -80,3 +90,5 @@ The image supports both direct `/learn/` access and gateway access where the `/l
 - `nginx/default.conf` provides SPA routing and immutable asset caching.
 
 The public route contract is `/learn/`, so existing training links continue to work when awesome-localstack sends that path to this service.
+
+Old `/slides?slide=N` and `/guide?slide=N` bookmarks remain compatibility aliases. They redirect into the closest lesson-owned teaching moment (with contextual presenter notes for guide links) and do not restore a second deck or theory sequence.

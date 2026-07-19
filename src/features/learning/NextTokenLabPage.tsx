@@ -17,12 +17,13 @@ import { applyTemperature, crossEntropy, decodeToken } from './learningMath';
 import { STATIC_NEXT_TOKEN_RESULT } from './nextTokenProviders';
 import { useLiveNextToken } from './useLiveNextToken';
 import { LLM_COURSE_PROMPT } from './course/courseScenario';
+import { LIVE_AI_RUNTIME_ENABLED } from '../../lib/runtimeCapabilities';
 
 function visibleToken(token: string) {
   return token.startsWith(' ') ? `·${token.slice(1)}` : token;
 }
 
-export function NextTokenLabPage({ embedded = false }: { embedded?: boolean }) {
+export function NextTokenLabPage({ embedded = false, liveRuntimeEnabled = LIVE_AI_RUNTIME_ENABLED }: { embedded?: boolean; liveRuntimeEnabled?: boolean }) {
   const [mode, setMode] = useState<'static' | 'live'>('static');
   const [model, setModel] = useState('llama3.2:1b');
   const [livePrompt, setLivePrompt] = useState(LLM_COURSE_PROMPT);
@@ -70,7 +71,7 @@ export function NextTokenLabPage({ embedded = false }: { embedded?: boolean }) {
       <div className="mb-6 grid grid-cols-2 gap-2 rounded-[1.35rem] border border-stone-200 bg-white/80 p-2" aria-label="Probability source">
         {([
           ['static', 'Offline example', ServerOff],
-          ['live', 'Live model', Radio],
+          ...(liveRuntimeEnabled ? [['live', 'Live model', Radio] as const] : []),
         ] as const).map(([value, label, Icon]) => (
           <button
             key={value}

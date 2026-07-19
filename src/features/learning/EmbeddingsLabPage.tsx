@@ -9,6 +9,7 @@ import {
   projectEmbeddings2d,
 } from './embeddingMath';
 import { useLiveEmbeddings } from './useLearningModel';
+import { LIVE_AI_RUNTIME_ENABLED } from '../../lib/runtimeCapabilities';
 
 type EmbeddingMode = 'guided' | 'live';
 
@@ -18,7 +19,7 @@ function shortLabel(text: string) {
   return text.length > 28 ? `${text.slice(0, 27)}…` : text;
 }
 
-export function EmbeddingsLabPage() {
+export function EmbeddingsLabPage({ liveRuntimeEnabled = LIVE_AI_RUNTIME_ENABLED }: { liveRuntimeEnabled?: boolean } = {}) {
   const [mode, setMode] = useState<EmbeddingMode>('guided');
   const [model, setModel] = useState('embeddinggemma');
   const [inputText, setInputText] = useState(DEFAULT_LIVE_INPUTS);
@@ -73,9 +74,9 @@ export function EmbeddingsLabPage() {
         <button type="button" onClick={() => { setMode('guided'); setSelectedIndex(0); }} aria-pressed={mode === 'guided'} className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${mode === 'guided' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-stone-100'}`} data-testid="embeddings-mode-guided">
           <Sparkles className="h-4 w-4" /> Guided example
         </button>
-        <button type="button" onClick={() => { setMode('live'); setSelectedIndex(0); }} aria-pressed={mode === 'live'} className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${mode === 'live' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-stone-100'}`} data-testid="embeddings-mode-live">
+        {liveRuntimeEnabled ? <button type="button" onClick={() => { setMode('live'); setSelectedIndex(0); }} aria-pressed={mode === 'live'} className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${mode === 'live' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-stone-100'}`} data-testid="embeddings-mode-live">
           <Radio className="h-4 w-4" /> Live local model
-        </button>
+        </button> : null}
       </div>
 
       {mode === 'live' ? (

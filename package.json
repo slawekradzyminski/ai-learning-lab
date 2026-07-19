@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "playwright test --reporter=list",
+    "test:e2e:course": "playwright test e2e/learning-product.spec.ts --reporter=list",
     "test:watch": "vitest",
     "fetch:bonsai-tokenizer": "node fetch-bonsai-tokenizer.mjs"
   },

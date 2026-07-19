@@ -96,6 +96,8 @@ const intentionalFeatureDifferences = new Set([
 
 const standaloneAdditions = new Set([
   'components/MermaidDiagram.tsx',
+  'teachingMoments/LegacyCourseMaterialRedirect.test.tsx',
+  'teachingMoments/LegacyCourseMaterialRedirect.tsx',
   'teachingMoments/LessonPresentation.tsx',
   'teachingMoments/TeachingMomentCanvas.tsx',
   'teachingMoments/types.ts',

@@ -36,6 +36,14 @@ describe('TokenizationLabPage', () => {
     expect(screen.getByTestId('token-detail')).toHaveTextContent('Token ID');
   });
 
+  test('keeps the pinned tokenizer but hides unsupported runtime verification', async () => {
+    renderWithProviders(<TokenizationLabPage liveRuntimeEnabled={false} />);
+
+    fireEvent.click(screen.getByTestId('tokenization-mode-bonsai'));
+    await waitFor(() => expect(screen.getByTestId('tokenization-source')).toHaveTextContent('Qwen3.6 tokenizer used by Bonsai 27B'));
+    expect(screen.queryByTestId('tokenization-verification')).not.toBeInTheDocument();
+  });
+
   test('loads exact tokenizer pieces and verifies the count through Ollama', async () => {
     vi.mocked(ollama.getLearningTokenCount).mockResolvedValue({
       source: 'ollama-live',

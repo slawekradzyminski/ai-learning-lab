@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Search } from 'lucide-react';
+import { ScanSearch, Search } from 'lucide-react';
 import { gpt2 } from '../../../lib/api';
 import type { Gpt2InspectorStatus } from '../../../types/gpt2';
+import { LIVE_AI_RUNTIME_ENABLED } from '../../../lib/runtimeCapabilities';
+import { EmbeddingVectorHeatmap } from '../EmbeddingVectorHeatmap';
 import { Gpt2EmbeddingExplorer } from './Gpt2EmbeddingExplorer';
 import { WordEmbeddingCanvas } from './WordEmbeddingCanvas';
 import { GLOVE_MODEL, GLOVE_WORDS } from './gloveWordEmbeddings';
@@ -26,6 +28,7 @@ export function WordEmbeddingExplorer() {
   const [gpt2Status, setGpt2Status] = useState<Gpt2InspectorStatus | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(indexFor('dog'));
   const [mode, setMode] = useState<ExperimentMode>('explore');
+  const [showAllWords, setShowAllWords] = useState(false);
   const [query, setQuery] = useState('dog');
   const [searchError, setSearchError] = useState<string | null>(null);
   const [analogyWords, setAnalogyWords] = useState<[string, string, string]>(['man', 'king', 'woman']);
@@ -51,13 +54,14 @@ export function WordEmbeddingExplorer() {
     : mode === 'axis'
       ? [[indexFor(axisWords[0]), indexFor(axisWords[1])]]
       : [];
-  const visibleIndices = mode === 'explore'
+  const focusedIndices = mode === 'explore'
     ? [selectedIndex, ...nearest.slice(0, 12).map(({ index }) => index)]
     : mode === 'analogy'
       ? [...analogyIndices, ...analogy.matches.slice(0, 8).map(({ index }) => index)]
       : mode === 'odd'
         ? oddWords.map(indexFor)
         : axisIndices;
+  const visibleIndices = showAllWords ? GLOVE_WORDS.map((_, index) => index) : focusedIndices;
   const focusedIndex = mode === 'explore'
     ? selectedIndex
     : mode === 'analogy'
@@ -67,6 +71,7 @@ export function WordEmbeddingExplorer() {
         : indexFor(axisWords[1]);
 
   useEffect(() => {
+    if (!LIVE_AI_RUNTIME_ENABLED) return undefined;
     let active = true;
     void gpt2.getStatus().then((status) => { if (active) setGpt2Status(status); }).catch(() => { if (active) setGpt2Status(null); });
     return () => { active = false; };
@@ -114,17 +119,20 @@ export function WordEmbeddingExplorer() {
             {searchError ? <p className="mt-2 text-xs text-amber-200" role="alert">{searchError}</p> : null}
           </form> : null}
         </div>
-        {source === 'glove' ? <div className="mt-5 flex flex-wrap gap-1" role="tablist" aria-label="Word embedding experiments">
-          {modes.map((candidate) => (
-            <button key={candidate.id} type="button" role="tab" aria-selected={mode === candidate.id} onClick={() => setMode(candidate.id)} className={`min-h-10 px-4 text-xs font-semibold transition ${mode === candidate.id ? 'bg-sky-400 text-slate-950' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`} data-testid={`word-mode-${candidate.id}`}>{candidate.label}</button>
-          ))}
+        {source === 'glove' ? <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-1" role="tablist" aria-label="Word embedding experiments">
+            {modes.map((candidate) => (
+              <button key={candidate.id} type="button" role="tab" aria-selected={mode === candidate.id} onClick={() => setMode(candidate.id)} className={`min-h-10 px-4 text-xs font-semibold transition ${mode === candidate.id ? 'bg-sky-400 text-slate-950' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`} data-testid={`word-mode-${candidate.id}`}>{candidate.label}</button>
+            ))}
+          </div>
+          <button type="button" onClick={() => setShowAllWords((visible) => !visible)} aria-pressed={showAllWords} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-sky-400/30 px-4 text-xs font-semibold text-sky-200 transition hover:border-sky-300" data-testid="toggle-glove-embedding-space"><ScanSearch className="h-4 w-4" />{showAllWords ? 'Show focused neighborhood' : `Show all ${GLOVE_WORDS.length} words`}</button>
         </div> : null}
       </header>
 
       {source === 'glove' ? <><div className="grid xl:grid-cols-[minmax(0,1fr)_17rem]">
         <WordEmbeddingCanvas rows={GLOVE_WORDS} selectedIndex={focusedIndex} visibleIndices={visibleIndices} onSelect={selectWord} highlightedIndices={highlightedIndices} connectionPairs={connectionPairs} />
         <aside className="border-t border-white/10 p-5 xl:border-l xl:border-t-0 md:p-7" aria-label="Embedding experiment details">
-          {mode === 'explore' ? <ExploreWordPanel rows={GLOVE_WORDS} selectedIndex={selectedIndex} nearest={nearest} onSelect={selectWord} /> : null}
+          {mode === 'explore' ? <><ExploreWordPanel rows={GLOVE_WORDS} selectedIndex={selectedIndex} nearest={nearest} onSelect={selectWord} /><EmbeddingVectorHeatmap inputs={GLOVE_WORDS.map(({ word }) => word)} vectors={GLOVE_WORDS.map(({ vector }) => vector)} indices={[selectedIndex]} /></> : null}
           {mode === 'analogy' ? <AnalogyPanel rows={GLOVE_WORDS} words={analogyWords} onChange={updateAnalogy} matches={analogy.matches} onSelect={selectWord} /> : null}
           {mode === 'odd' ? <OddOneOutPanel rows={GLOVE_WORDS} words={oddWords} onChange={updateOdd} scores={odd.scores} /> : null}
           {mode === 'axis' ? <SemanticAxisPanel rows={GLOVE_WORDS} from={axisWords[0]} to={axisWords[1]} onFrom={(word) => setAxisWords([word, axisWords[1]])} onTo={(word) => setAxisWords([axisWords[0], word])} low={axis.low} high={axis.high} onSelect={selectWord} /> : null}
@@ -132,8 +140,8 @@ export function WordEmbeddingExplorer() {
       </div>
 
       <footer className="flex flex-col gap-2 border-t border-white/10 px-5 py-4 text-xs leading-5 text-slate-500 md:flex-row md:items-center md:justify-between md:px-7">
-        <span>Only the relevant neighborhood is drawn; all 181 teaching words remain searchable.</span>
-        <span>Real GloVe vectors · focused 3D PCA view</span>
+        <span>{showAllWords ? 'All 181 teaching words are drawn; select any point to focus it.' : 'Only the relevant neighborhood is drawn; all 181 teaching words remain searchable.'}</span>
+        <span>Real GloVe vectors · {showAllWords ? 'complete 3D PCA view' : 'focused 3D PCA view'}</span>
       </footer></> : <Gpt2EmbeddingExplorer />}
       <p className="border-t border-white/10 px-5 py-3 text-xs leading-5 text-slate-600 md:px-7">Bonsai note: Ollama exposes Bonsai tokenization and generation, but not the model’s embedding weight matrix.</p>
     </section>

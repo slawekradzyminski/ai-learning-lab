@@ -18,6 +18,7 @@ const labRoutes = [
   'agent-loop', 'subagents', 'context-harness', 'memory-instructions', 'hooks-lifecycle',
   'tool-boundaries', 'agent-evals',
 ];
+const expectLiveRuntime = process.env.E2E_EXPECT_LIVE_RUNTIME === '1';
 
 test('home focuses on one course and progressively discloses every interactive lab', async ({ page }) => {
   await page.goto('/learn/');
@@ -50,6 +51,21 @@ test('canonical AI Agents course keeps the runtime experiment, chapter, and chec
   await page.getByTestId('agent-course-next').click();
   await expect(page).toHaveURL(/course\/subagents$/);
   await expect(page.getByTestId('subagents-lab-page')).toBeVisible();
+});
+
+test('release exposes live controls only when its backend capabilities are enabled', async ({ page }) => {
+  await page.goto('/learn/next-token');
+  await expect(page.getByRole('button', { name: 'Offline example' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Live model' })).toHaveCount(expectLiveRuntime ? 1 : 0);
+
+  await page.goto('/learn/embeddings');
+  await expect(page.getByTestId('embeddings-mode-guided')).toBeVisible();
+  await expect(page.getByTestId('embeddings-mode-live')).toHaveCount(expectLiveRuntime ? 1 : 0);
+
+  await page.goto('/learn/tokenization');
+  await page.getByTestId('tokenization-mode-bonsai').click();
+  await expect(page.getByTestId('tokenization-source')).toContainText('Qwen3.6 tokenizer used by Bonsai 27B');
+  await expect(page.getByTestId('tokenization-verification')).toHaveCount(expectLiveRuntime ? 1 : 0);
 });
 
 test('semantic embeddings reveal an interactive 3D projection on demand', async ({ page }) => {
@@ -90,6 +106,8 @@ test('canonical LLM course moves from experiment through explanation to checkpoi
   await expect(page.getByTestId('word-embedding-explorer-closed')).toContainText('real 50D vectors');
   await page.getByTestId('open-word-embedding-explorer').click();
   await expect(page.getByTestId('word-embedding-explorer')).toContainText('181 words');
+  await expect(page.locator('[data-testid^="word-embedding-point-"]')).toHaveCount(11);
+  await page.getByTestId('toggle-glove-embedding-space').click();
   await expect(page.locator('[data-testid^="word-embedding-point-"]')).toHaveCount(181);
   await expect(page.getByTestId('embedding-vector-heatmap')).toContainText('Vector fingerprint');
   await page.getByTestId('word-mode-analogy').click();
@@ -105,33 +123,37 @@ for (const route of labRoutes) {
   });
 }
 
-test('complete materials indexes expose every lab and exercise handoff', async ({ page }) => {
+test('complete materials indexes expose every lab and integrated lesson handoff', async ({ page }) => {
   await page.goto('/learn/how-llm-works/materials');
   await expect(page.locator('[data-testid^="materials-lab-"]')).toHaveCount(12);
-  await expect(page.getByTestId('materials-lab-tokenization').getByText('Exercise', { exact: true })).toBeVisible();
-  await expect(page.getByTestId('materials-lab-digits').getByText('Theory', { exact: true })).toBeVisible();
+  await expect(page.getByTestId('materials-lab-tokenization').getByText('Interactive lab', { exact: true })).toBeVisible();
+  await expect(page.getByTestId('materials-lab-tokenization').getByText('Integrated lesson', { exact: true })).toBeVisible();
+  await expect(page.getByTestId('materials-lab-digits').getByText('Interactive lab', { exact: true })).toBeVisible();
 
   await page.goto('/learn/how-ai-agent-works/materials');
   await expect(page.locator('[data-testid^="materials-lab-"]')).toHaveCount(7);
   await expect(page.locator('[data-testid^="materials-course-lesson-"]')).toHaveCount(8);
   await expect(page.getByTestId('materials-course-lesson-capstone')).toHaveAttribute('href', '/learn/how-ai-agent-works/course/capstone');
-  await expect(page.getByTestId('materials-lab-agent-loop').getByText('Exercise', { exact: true })).toBeVisible();
-  await expect(page.getByTestId('materials-lab-agent-evals').getByText('Theory', { exact: true })).toBeVisible();
+  await expect(page.getByTestId('materials-lab-agent-loop').getByText('Interactive lab', { exact: true })).toBeVisible();
+  await expect(page.getByTestId('materials-lab-agent-evals').getByText('Integrated lesson', { exact: true })).toBeVisible();
 });
 
-test('both presentation decks and companion guides render independently', async ({ page }) => {
+test('legacy presentation and guide links resolve into lesson-owned moments', async ({ page }) => {
   await page.goto('/learn/how-llm-works/slides?slide=53');
-  await expect(page.getByText('53 / 53')).toBeVisible();
-  await expect(page.getByTestId('training-slides-page')).toBeVisible();
+  await expect(page).toHaveURL(/\/learn\/how-llm-works\/course\/capstone\?view=present&moment=capstone\/debrief$/);
+  await expect(page.getByTestId('lesson-presentation')).toBeVisible();
+  await expect(page.getByTestId('teaching-moment-capstone/debrief')).toBeVisible();
 
   await page.goto('/learn/how-ai-agent-works/slides?slide=33');
-  await expect(page.getByText('33 / 33')).toBeVisible();
-  await expect(page.getByTestId('training-slides-page')).toBeVisible();
+  await expect(page).toHaveURL(/\/learn\/how-ai-agent-works\/course\/capstone\?view=present&moment=capstone\/debrief$/);
+  await expect(page.getByTestId('teaching-moment-capstone/debrief')).toBeVisible();
 
   await page.goto('/learn/how-llm-works/guide?slide=1');
-  await expect(page.getByTestId('training-guide-page')).toContainText('How LLMs Work');
+  await expect(page).toHaveURL(/\/learn\/how-llm-works\/course\/prediction-goal\?view=present&moment=prediction-goal\/hook&notes=1$/);
+  await expect(page.getByTestId('presentation-notes')).toContainText('Presenter cue');
 
-  await page.goto('/learn/how-ai-agent-works/guide?slide=1');
-  await expect(page.getByTestId('training-guide-page')).toContainText('Practical lens');
-  await expect(page.getByTestId('training-guide-page')).not.toContainText('Mathematical lens');
+  await page.goto('/learn/how-ai-agent-works/guide?slide=26');
+  await expect(page).toHaveURL(/\/learn\/how-ai-agent-works\/course\/tool-boundaries\?view=present&moment=tool-boundaries\/mechanism&notes=1$/);
+  await expect(page.getByTestId('teaching-moment-tool-boundaries/mechanism')).toBeVisible();
+  await expect(page.getByTestId('presentation-notes')).toContainText('Presenter cue');
 });

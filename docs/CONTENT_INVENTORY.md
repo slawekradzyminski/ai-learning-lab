@@ -56,7 +56,7 @@ Every lesson reuses the goal to research three laptops under €900 and write `l
 | Learning feature test files |  |  | 51 |
 | Pinned Bonsai tokenizer files |  |  | 4 |
 
-The earlier extracted curriculum contained 86 detached presentation frames and 86 independently generated guide sections. Their useful claims, prompts, mechanisms, and debriefs have been absorbed into the 72 canonical lesson moments; the parallel deck and guide implementations were then retired. The current suite contains 158 unit and component tests across 52 test files, including 51 learning-feature test files and structural quality gates for every canonical long-form chapter and teaching sequence.
+The earlier extracted curriculum contained 86 detached presentation frames and 86 independently generated guide sections. Their useful claims, prompts, mechanisms, and debriefs have been absorbed into the 72 canonical lesson moments; the parallel deck and guide implementations were then retired. The current suite contains 164 unit and component tests across 54 test files, including 52 learning-feature test files and structural quality gates for every canonical long-form chapter and teaching sequence.
 
 ## LLM course
 
@@ -106,7 +106,9 @@ The earlier extracted curriculum contained 86 detached presentation frames and 8
 - `/learn/how-ai-agent-works/materials`
 - `/learn/how-ai-agent-works/course/agent-loop`
 
-These canonical course and materials routes are the only entry points. Full-screen presentation is entered from the relevant lesson and returns to that same lesson and moment.
+These canonical course and materials routes are the primary entry points. Full-screen presentation is entered from the relevant lesson and returns to that same lesson and moment.
+
+Previously published `/learn/training-slides`, `/learn/how-llm-works/slides?slide=N`, `/learn/how-llm-works/guide?slide=N`, `/learn/how-ai-agent-works/slides?slide=N`, and `/learn/how-ai-agent-works/guide?slide=N` links remain compatibility aliases. They map numeric bookmarks onto the closest semantic `lesson/moment` identifier and never define a separate curriculum or duplicate the integrated theory.
 
 Each materials page links every chapter to its interactive lab and canonical lesson package. Optional standalone labs remain discoverable there as secondary resources without interrupting the canonical learner path.
 

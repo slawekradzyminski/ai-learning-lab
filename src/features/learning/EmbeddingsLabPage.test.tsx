@@ -23,6 +23,13 @@ describe('EmbeddingsLabPage', () => {
     expect(screen.queryByTestId('embedding-space-3d')).not.toBeInTheDocument();
   });
 
+  test('hides the unsupported live source in guided-only builds', () => {
+    renderWithProviders(<EmbeddingsLabPage liveRuntimeEnabled={false} />);
+
+    expect(screen.getByTestId('embeddings-mode-guided')).toBeInTheDocument();
+    expect(screen.queryByTestId('embeddings-mode-live')).not.toBeInTheDocument();
+  });
+
   test('loads the interactive 3D projection only after the learner opens it', async () => {
     renderWithProviders(<EmbeddingsLabPage />);
 
