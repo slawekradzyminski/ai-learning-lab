@@ -20,12 +20,21 @@ describe('LlmCoursePage', () => {
     renderCourse();
 
     expect(screen.getByTestId('course-lesson-title')).toHaveTextContent('What should follow');
-    expect(screen.getByTestId('lesson-teaching-sequence')).toBeInTheDocument();
+    expect(screen.getByTestId('lesson-visual-introduction')).toBeInTheDocument();
+    expect(screen.queryByTestId('teaching-moment-prediction-goal/hook')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('open-lesson-introduction'));
+    expect(screen.getByRole('dialog', { name: 'Visual introduction' })).toBeInTheDocument();
     expect(screen.getByTestId('teaching-moment-prediction-goal/hook')).toBeInTheDocument();
-    expect(screen.getByTestId('teaching-moment-prediction-goal/mechanism')).toBeInTheDocument();
-    expect(screen.getByTestId('teaching-moment-prediction-goal/practice')).toBeInTheDocument();
-    expect(screen.getByTestId('teaching-moment-prediction-goal/debrief')).toBeInTheDocument();
+    expect(screen.queryByTestId('teaching-moment-prediction-goal/mechanism')).not.toBeInTheDocument();
     expect(screen.getByTestId('present-lesson')).toHaveAttribute('href', '/learn/how-llm-works/course/prediction-goal?view=present&moment=prediction-goal/hook');
+    fireEvent.click(screen.getByTestId('introduction-next'));
+    expect(screen.getByTestId('teaching-moment-prediction-goal/mechanism')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('introduction-next'));
+    expect(screen.getByTestId('teaching-moment-prediction-goal/practice')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('introduction-next'));
+    expect(screen.getByTestId('teaching-moment-prediction-goal/debrief')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('introduction-continue'));
+    expect(screen.queryByTestId('lesson-introduction-dialog')).not.toBeInTheDocument();
     expect(screen.getByTestId('course-pipeline')).toHaveTextContent('Text becomes tokens');
     expect(screen.getAllByText(/The animal did not cross/).length).toBeGreaterThan(1);
 
@@ -44,7 +53,7 @@ describe('LlmCoursePage', () => {
 
     expect(screen.getByTestId('lesson-presentation')).toBeInTheDocument();
     expect(screen.getByTestId('teaching-moment-attention/mechanism')).toHaveTextContent('Query, key, value');
-    expect(screen.getByTestId('presentation-exit')).toHaveAttribute('href', '/learn/how-llm-works/course/attention#lesson-moment-attention/mechanism');
+    expect(screen.getByTestId('presentation-exit')).toHaveAttribute('href', '/learn/how-llm-works/course/attention#lesson-visual-introduction-attention');
     fireEvent.click(screen.getByTestId('presentation-notes-toggle'));
     expect(screen.getByTestId('presentation-notes')).toHaveTextContent('Presenter cue');
   });

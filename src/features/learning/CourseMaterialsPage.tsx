@@ -28,12 +28,12 @@ export function CourseMaterialsPage({ curriculum }: { curriculum: Curriculum }) 
       <header className="border-b border-stone-300 pb-8">
         <Badge variant="outline" tone="tracking">One integrated curriculum</Badge>
         <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-slate-950 md:text-6xl">{curriculum === 'agent' ? 'AI agent course materials' : 'LLM course materials'}</h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">Every lesson keeps its visual teaching moments, guided activity, complete chapter, practice, and checkpoint in one continuous route. Presentation mode renders those same moments full-screen.</p>
+        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">Every lesson keeps its visual introduction, guided activity, complete chapter, practice, and checkpoint in one continuous route. Teaching moments open on demand instead of interrupting the reading surface.</p>
 
         <div className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-stone-200 bg-stone-200 sm:grid-cols-4">
           {[
             { icon: SquareActivity, value: labs.length, label: 'interactive labs' },
-            { icon: Presentation, value: teachingMomentCount, label: 'visible teaching moments' },
+            { icon: Presentation, value: teachingMomentCount, label: 'lesson-owned moments' },
             { icon: BookOpenText, value: canonicalLessons.length, label: 'long-form chapters' },
             { icon: FlaskConical, value: canonicalLessons.length, label: 'guided lesson activities' },
           ].map(({ icon: Icon, value, label }) => <div key={label} className="bg-white px-5 py-5"><Icon className={`h-5 w-5 ${accent === 'amber' ? 'text-amber-600' : 'text-sky-600'}`} /><p className="mt-4 text-3xl font-semibold text-slate-950">{value}</p><p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</p></div>)}
@@ -50,7 +50,7 @@ export function CourseMaterialsPage({ curriculum }: { curriculum: Curriculum }) 
           <div className={`border-l-4 pl-4 ${accent === 'amber' ? 'border-amber-500' : 'border-sky-500'}`}>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Canonical learner path</p>
             <h2 className="mt-2 text-2xl font-semibold text-slate-950">Course chapters</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Each route visibly interleaves its hook, mechanism, practice brief, experiment, debrief, complete essay, and checkpoint.</p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Each route offers its hook, mechanism, practice brief, and debrief in a focused visual introduction, then continues through the experiment, complete essay, and checkpoint.</p>
           </div>
           <ol className="mt-5 divide-y divide-stone-200 border-y border-stone-200">
             {canonicalLessons.map((lesson, index) => (

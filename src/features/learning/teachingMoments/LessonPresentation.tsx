@@ -61,7 +61,7 @@ export function LessonPresentation({
       } else if (event.key.toLowerCase() === 'n') {
         setShowNotes((visible) => !visible);
       } else if (event.key === 'Escape') {
-        navigate(`${getRoute(lesson.id)}#lesson-moment-${moment.id}`);
+        navigate(`${getRoute(lesson.id)}#lesson-visual-introduction-${lesson.id}`);
       }
     };
     window.addEventListener('keydown', handleKey);
@@ -87,7 +87,7 @@ export function LessonPresentation({
         <div className="flex items-center gap-1">
           <button type="button" onClick={() => setShowNotes((visible) => !visible)} className={`inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/10 ${showNotes ? accentText : 'text-slate-400'}`} aria-label="Toggle presenter notes" aria-pressed={showNotes} data-testid="presentation-notes-toggle">{showNotes ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}</button>
           <button type="button" onClick={requestFullscreen} className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Toggle full screen"><Maximize2 className="h-4 w-4" /></button>
-          <Link to={`${getRoute(lesson.id)}#lesson-moment-${moment.id}`} className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Exit presentation" data-testid="presentation-exit"><X className="h-4 w-4" /></Link>
+          <Link to={`${getRoute(lesson.id)}#lesson-visual-introduction-${lesson.id}`} className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Exit presentation" data-testid="presentation-exit"><X className="h-4 w-4" /></Link>
         </div>
       </header>
 

@@ -8,7 +8,7 @@ describe('CourseMaterialsPage', () => {
     renderWithProviders(<CourseMaterialsPage curriculum="llm" />);
 
     expect(screen.getAllByTestId(/^materials-lab-/)).toHaveLength(12);
-    expect(screen.getByTestId('course-materials-llm')).toHaveTextContent('40visible teaching moments');
+    expect(screen.getByTestId('course-materials-llm')).toHaveTextContent('40lesson-owned moments');
     expect(screen.getByTestId('materials-lab-tokenization')).toHaveTextContent('Interactive lab');
     expect(screen.getByTestId('materials-lab-tokenization')).toHaveTextContent('Integrated lesson');
     expect(screen.getByRole('link', { name: 'Present the course' })).toHaveAttribute('href', '/learn/how-llm-works/course/prediction-goal?view=present&moment=prediction-goal/hook');
@@ -18,7 +18,7 @@ describe('CourseMaterialsPage', () => {
     renderWithProviders(<CourseMaterialsPage curriculum="agent" />);
 
     expect(screen.getAllByTestId(/^materials-lab-/)).toHaveLength(7);
-    expect(screen.getByTestId('course-materials-agent')).toHaveTextContent('32visible teaching moments');
+    expect(screen.getByTestId('course-materials-agent')).toHaveTextContent('32lesson-owned moments');
     expect(screen.getByTestId('materials-lab-agent-loop')).toHaveTextContent('Integrated lesson');
     expect(screen.getByTestId('materials-lab-agent-evals')).toHaveTextContent('Evaluate outcomes and reliability');
     expect(screen.getAllByTestId(/^materials-course-lesson-/)).toHaveLength(8);

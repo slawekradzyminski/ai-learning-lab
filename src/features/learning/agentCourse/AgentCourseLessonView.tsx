@@ -1,6 +1,6 @@
 import { BookOpen, FlaskConical } from 'lucide-react';
 import { LearningCheckpoint } from '../LearningCheckpoint';
-import { LessonDebriefMoment, LessonTeachingSequence } from '../teachingMoments/TeachingMomentCanvas';
+import { LessonVisualIntroduction } from '../teachingMoments/TeachingMomentCanvas';
 import type { AgentCourseLesson } from './agentCourseCatalog';
 import { AgentCourseActivity } from './AgentCourseActivity';
 import { AgentCourseLessonNotes } from './AgentCourseLessonNotes';
@@ -20,14 +20,13 @@ export function AgentCourseLessonView({ lesson, onComplete }: { lesson: AgentCou
       </div>
 
       <nav className="flex flex-wrap items-center gap-x-7 gap-y-3 border-b border-stone-200 pb-5 text-xs font-semibold" aria-label="Lesson materials">
-        <a href={`#lesson-moment-${teachingMoments.moments[0].id}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700">Teaching sequence</a>
+        <a href={`#lesson-visual-introduction-${lesson.id}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700">Visual introduction</a>
         <a href="#agent-lesson-experiment" className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700"><FlaskConical className="h-3.5 w-3.5" /> Experiment</a>
         <a href="#agent-lesson-theory" className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700"><BookOpen className="h-3.5 w-3.5" /> Complete theory</a>
       </nav>
 
-      <LessonTeachingSequence lesson={teachingMoments} accent="amber" courseRoute={getAgentCourseRoute(lesson.id)} />
+      <LessonVisualIntroduction lesson={teachingMoments} accent="amber" courseRoute={getAgentCourseRoute(lesson.id)} experimentId="agent-lesson-experiment" />
       <div id="agent-lesson-experiment" className="scroll-mt-20"><AgentCourseActivity lesson={lesson} /></div>
-      <LessonDebriefMoment lesson={teachingMoments} accent="amber" />
       <div id="agent-lesson-theory" className="scroll-mt-20"><AgentCourseLessonNotes lesson={lesson} /></div>
       <LearningCheckpoint id={`agent-course-${lesson.id}`} eyebrow="Check your understanding" {...lesson.checkpoint} onCorrect={onComplete} compact />
       <p className="border-l-2 border-amber-500 pl-5 text-sm leading-7 text-slate-600" data-testid="agent-course-forward-bridge"><span className="font-semibold text-slate-900">Next:</span> {lesson.bridgeForward}</p>

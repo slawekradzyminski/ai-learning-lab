@@ -2,14 +2,14 @@
 
 This document is the explicit extraction contract for the standalone application. The `/learn/` home page links to a complete materials index for each course, while each canonical lesson itself owns its teaching moments, activity, long-form theory, and assessment. Presentation is a rendering mode of that lesson content, not a separate course hidden behind the materials index.
 
-Every canonical lesson exposes four teaching moments in its normal learner flow:
+Every canonical lesson owns four teaching moments exposed through an optional visual introduction:
 
 1. **Hook** — establishes the question and makes the learner predict an outcome.
 2. **Mechanism** — introduces the smallest model needed to perform the activity.
 3. **Practice brief** — frames the activity, its controls, and what evidence to collect.
 4. **Debrief** — interprets the observed result, corrects likely misconceptions, and connects forward.
 
-The same stable `lesson/moment` identifiers drive inline rendering and full-screen presentation mode. Presenter notes, discussion prompts, and timing cues remain contextual metadata on those moments. They do not create a second content sequence or depend on numeric deck positions.
+The same stable `lesson/moment` identifiers drive the in-lesson modal and full-screen presentation mode. Presenter notes, discussion prompts, and timing cues remain contextual metadata on those moments. They do not create a second content sequence or depend on numeric deck positions.
 
 ## Canonical LLM learner path
 
@@ -26,7 +26,7 @@ The same stable `lesson/moment` identifiers drive inline rendering and full-scre
 9. Learning
 10. Capstone reconstruction
 
-Each lesson is one learner flow: question, representation change, visible hook and mechanism, practice brief, experiment, debrief, plain-language explanation, misconception correction, checkpoint, and forward bridge. Optional notation and annotated sources stay behind quiet disclosures. Full-screen presentation mode renders the same lesson-owned moments and reveals contextual presenter notes where appropriate. Browser-local completion state records progress. The deterministic glass-box lane and live Bonsai evidence remain explicitly distinguished inside the relevant explanations.
+Each lesson is one learner flow: question, representation change, optional visual introduction, experiment, plain-language explanation, misconception correction, checkpoint, and forward bridge. The modal introduction pages through the hook, mechanism, practice brief, and debrief without inserting them into the reading document. Optional notation and annotated sources stay behind quiet disclosures. Full-screen presentation mode renders the same lesson-owned moments and reveals contextual presenter notes where appropriate. Browser-local completion state records progress. The deterministic glass-box lane and live Bonsai evidence remain explicitly distinguished inside the relevant explanations.
 
 The existing 19 labs remain directly addressable as the deeper exercise library. Semantic retrieval and neural-learning/vision remain optional branches rather than interruptions in the core transformer story.
 
@@ -43,7 +43,7 @@ The existing 19 labs remain directly addressable as the deeper exercise library.
 7. Agent evaluations
 8. Complete-system capstone
 
-Every lesson reuses the goal to research three laptops under €900 and write `laptop-comparison.md` without purchasing or contacting a vendor. The recurring scenario makes ownership visible: the model proposes, the harness selects context and mediates effects, tools interact with the environment, and evaluators inspect both the trace and terminal state. Each lesson combines its existing browser lab, four visible teaching moments, a long-form chapter, diagrams, misconception clinic, exercises, glossary, checkpoint, contextual presenter notes, and explicit forward bridge. Full-screen presentation uses those same moments and stable identifiers. Browser-local progress is independent from the LLM course.
+Every lesson reuses the goal to research three laptops under €900 and write `laptop-comparison.md` without purchasing or contacting a vendor. The recurring scenario makes ownership visible: the model proposes, the harness selects context and mediates effects, tools interact with the environment, and evaluators inspect both the trace and terminal state. Each lesson combines its existing browser lab, an optional four-moment visual introduction, a long-form chapter, diagrams, misconception clinic, exercises, glossary, checkpoint, contextual presenter notes, and explicit forward bridge. Full-screen presentation uses those same moments and stable identifiers. Browser-local progress is independent from the LLM course.
 
 ## Inventory summary
 

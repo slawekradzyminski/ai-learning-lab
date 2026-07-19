@@ -10,7 +10,7 @@ The lab is intentionally independent of the e-commerce demo that originally host
 
 - **One coherent LLM journey:** ten lessons reuse the sentence `The animal did not cross the street because it was too`, showing how its representation changes from text to tokens, vectors, contextual states, and a next-token distribution.
 - **One coherent agent journey:** eight lessons reuse a laptop-research task, showing how a goal becomes selected context, model proposals, policy decisions, bounded effects, evidence, a verified stop, and repeated evaluation.
-- **Four visible teaching moments:** every canonical lesson places its hook, mechanism, practice brief, and debrief directly in the learner flow around the interactive activity.
+- **Optional visual introduction:** every canonical lesson keeps its hook, mechanism, practice brief, and debrief behind one focused modal entry point so the reading surface stays calm.
 - **One source, two rendering modes:** full-screen presentation mode renders those same lesson-owned teaching moments; it is not a detached deck with a separate sequence.
 - **Contextual presenter support:** presenter notes, prompts, and timing cues stay attached to the moment they explain and appear only when they are useful.
 - **Stable semantic navigation:** lesson and moment identifiers such as `attention/mechanism` define presentation order and return links without numeric deck positions.

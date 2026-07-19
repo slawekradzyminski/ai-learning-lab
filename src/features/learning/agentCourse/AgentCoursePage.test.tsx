@@ -14,11 +14,14 @@ describe('AgentCoursePage', () => {
     renderCourse();
 
     expect(screen.getByTestId('agent-course-lesson-title')).toHaveTextContent('LLM response become an agent run');
-    expect(screen.getByTestId('lesson-teaching-sequence')).toBeInTheDocument();
+    expect(screen.getByTestId('lesson-visual-introduction')).toBeInTheDocument();
+    expect(screen.queryByTestId('teaching-moment-agent-loop/hook')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('open-lesson-introduction'));
     expect(screen.getByTestId('teaching-moment-agent-loop/hook')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('introduction-next'));
     expect(screen.getByTestId('teaching-moment-agent-loop/mechanism')).toBeInTheDocument();
-    expect(screen.getByTestId('teaching-moment-agent-loop/practice')).toBeInTheDocument();
-    expect(screen.getByTestId('teaching-moment-agent-loop/debrief')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('close-lesson-introduction'));
+    expect(screen.queryByTestId('lesson-introduction-dialog')).not.toBeInTheDocument();
     expect(screen.getByTestId('agent-loop-lab-page')).toBeInTheDocument();
     expect(screen.getAllByText(/Research three laptops under €900/).length).toBeGreaterThanOrEqual(2);
     expect(await screen.findByTestId('course-theory-chapter')).toHaveTextContent('Question this chapter answers');
@@ -34,7 +37,7 @@ describe('AgentCoursePage', () => {
 
     expect(screen.getByTestId('lesson-presentation')).toBeInTheDocument();
     expect(screen.getByTestId('teaching-moment-agent-loop/mechanism')).toHaveTextContent('harness owns continuation');
-    expect(screen.getByTestId('presentation-exit')).toHaveAttribute('href', '/learn/how-ai-agent-works/course/agent-loop#lesson-moment-agent-loop/mechanism');
+    expect(screen.getByTestId('presentation-exit')).toHaveAttribute('href', '/learn/how-ai-agent-works/course/agent-loop#lesson-visual-introduction-agent-loop');
   });
 
   test('redirects an unknown lesson to the canonical starting point', () => {
