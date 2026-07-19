@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, BookOpen, ScanSearch } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { gpt2 } from '../../lib/api';
+import { LIVE_AI_RUNTIME_ENABLED } from '../../lib/runtimeCapabilities';
 import type { Gpt2InspectorStatus } from '../../types/gpt2';
 import { Gpt2LiveResidualStream } from './Gpt2LiveResidualStream';
 import { LabPageHeader } from './LabPageHeader';
@@ -24,6 +25,7 @@ export function ResidualStreamLabPage({ embedded = false }: { embedded?: boolean
   const maxProbability = Math.max(...layer.candidates.map(({ probability }) => probability));
 
   useEffect(() => {
+    if (!LIVE_AI_RUNTIME_ENABLED) return undefined;
     let active = true;
     void gpt2.getStatus()
       .then((status) => { if (active) setGpt2Status(status); })

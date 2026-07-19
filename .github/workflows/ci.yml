@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run audit:extraction
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e:course
+      - name: Build and smoke-test the runtime image
+        run: |
+          docker build --tag ai-learning-lab:ci .
+          docker run --detach --name ai-learning-lab-ci --publish 127.0.0.1:8083:80 ai-learning-lab:ci
+          trap 'docker rm --force ai-learning-lab-ci' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8083/healthz >/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              docker logs ai-learning-lab-ci
+              exit 1
+            fi
+            sleep 1
+          done
+          test "$(curl --fail --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8083/learn/)" = "200"
+          test "$(curl --fail --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8083/learn/how-ai-agent-works/course/agent-loop)" = "200"

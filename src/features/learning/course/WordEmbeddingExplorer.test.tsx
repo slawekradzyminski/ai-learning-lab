@@ -11,12 +11,17 @@ describe('WordEmbeddingExplorer', () => {
     render(<WordEmbeddingExplorer />);
     expect(screen.getByTestId('word-embedding-explorer')).toHaveTextContent('Focused GloVe · 181 words');
     expect(screen.getByTestId('word-embedding-canvas').querySelectorAll('[data-testid^="word-embedding-point-"]')).toHaveLength(11);
+    expect(screen.getByTestId('embedding-vector-heatmap')).toHaveTextContent('Vector fingerprint');
     expect(screen.getByTestId('word-embedding-canvas')).toHaveTextContent('Reset view');
     expect(screen.getByTestId('word-experiment-explore')).toHaveTextContent('cat');
 
     fireEvent.change(screen.getByTestId('word-embedding-search'), { target: { value: 'queen' } });
     fireEvent.submit(screen.getByTestId('word-embedding-search').closest('form')!);
     expect(screen.getByTestId('word-experiment-explore')).toHaveTextContent('queen');
+
+    fireEvent.click(screen.getByTestId('toggle-glove-embedding-space'));
+    expect(screen.getByTestId('word-embedding-canvas').querySelectorAll('[data-testid^="word-embedding-point-"]')).toHaveLength(181);
+    expect(screen.getByTestId('word-embedding-explorer')).toHaveTextContent('complete 3D PCA view');
   });
 
   test('turns the same space into analogy, odd-one-out, and semantic-axis experiments', () => {

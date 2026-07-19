@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '../../components/ui/badge';
 import { gpt2 } from '../../lib/api';
+import { LIVE_AI_RUNTIME_ENABLED } from '../../lib/runtimeCapabilities';
 import type { Gpt2InspectorStatus } from '../../types/gpt2';
 import { Gpt2LiveAttention } from './Gpt2LiveAttention';
 import { LabPageHeader } from './LabPageHeader';
@@ -282,6 +283,7 @@ export function AttentionLabPage({ embedded = false }: { embedded?: boolean }) {
   const stageCopy = STAGES.find((candidate) => candidate.id === stage) ?? STAGES[0];
 
   useEffect(() => {
+    if (!LIVE_AI_RUNTIME_ENABLED) return undefined;
     let active = true;
     void gpt2.getStatus()
       .then((status) => { if (active) setGpt2Status(status); })

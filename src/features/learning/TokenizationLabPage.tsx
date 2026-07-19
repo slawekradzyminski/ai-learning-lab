@@ -6,6 +6,7 @@ import { LabPageHeader } from './LabPageHeader';
 import { guidedTokenize, type TokenizationResult, type TokenizerManifest } from './tokenization';
 import { useLiveTokenCount } from './useLearningModel';
 import { LLM_COURSE_PROMPT } from './course/courseScenario';
+import { LIVE_AI_RUNTIME_ENABLED } from '../../lib/runtimeCapabilities';
 
 type TokenMode = 'guided' | 'bonsai';
 
@@ -28,7 +29,7 @@ function tokenTone(index: number, selected: boolean) {
   return tones[index % tones.length];
 }
 
-export function TokenizationLabPage({ embedded = false }: { embedded?: boolean }) {
+export function TokenizationLabPage({ embedded = false, liveRuntimeEnabled = LIVE_AI_RUNTIME_ENABLED }: { embedded?: boolean; liveRuntimeEnabled?: boolean }) {
   const [mode, setMode] = useState<TokenMode>('guided');
   const [text, setText] = useState(PRESETS[0].text);
   const [model, setModel] = useState(DEFAULT_OLLAMA_MODEL);
@@ -199,7 +200,7 @@ export function TokenizationLabPage({ embedded = false }: { embedded?: boolean }
         </div>
       </section>
 
-      {mode === 'bonsai' ? (
+      {mode === 'bonsai' && liveRuntimeEnabled ? (
         <section className="mt-6 grid gap-5 rounded-[2rem] border border-stone-200 bg-white/85 p-5 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.55fr)] md:p-7" data-testid="tokenization-verification">
           <form onSubmit={verifyWithBonsai}>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Runtime verification</p>
