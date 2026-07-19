@@ -9,15 +9,15 @@ export type DelegatedTask = {
 };
 
 const boundedTasks: DelegatedTask[] = [
-  { id: 'research', label: 'Research official docs', minutes: 9, tokens: 2800, writes: [] },
-  { id: 'implement', label: 'Build the lab page', minutes: 11, tokens: 3900, writes: ['MemoryLabPage.tsx'] },
-  { id: 'verify', label: 'Review tests and behavior', minutes: 7, tokens: 2400, writes: [] },
+  { id: 'candidates', label: 'Find three candidate laptops', minutes: 9, tokens: 2800, writes: [] },
+  { id: 'evidence', label: 'Verify prices and specifications', minutes: 11, tokens: 3900, writes: [] },
+  { id: 'review', label: 'Challenge missing or stale evidence', minutes: 7, tokens: 2400, writes: [] },
 ];
 
 const overlapTasks: DelegatedTask[] = [
-  { id: 'page-a', label: 'Add memory controls', minutes: 10, tokens: 3200, writes: ['MemoryLabPage.tsx'] },
-  { id: 'page-b', label: 'Restyle memory workspace', minutes: 8, tokens: 3000, writes: ['MemoryLabPage.tsx'] },
-  { id: 'tests', label: 'Add interaction tests', minutes: 6, tokens: 2200, writes: ['MemoryLabPage.test.tsx'] },
+  { id: 'report-a', label: 'Write comparison from catalog A', minutes: 10, tokens: 3200, writes: ['laptop-comparison.md'] },
+  { id: 'report-b', label: 'Write comparison from catalog B', minutes: 8, tokens: 3000, writes: ['laptop-comparison.md'] },
+  { id: 'citations', label: 'Create a separate source audit', minutes: 6, tokens: 2200, writes: ['laptop-sources.md'] },
 ];
 
 export function simulateDelegation(scenario: DelegationScenario, parallel: boolean, isolated: boolean) {

@@ -4,41 +4,26 @@ import { renderWithProviders } from '../../test/test-utils';
 import { LearningHomePage } from './LearningHomePage';
 
 describe('LearningHomePage', () => {
-  test('presents separate LLM and agent curricula with their own decks', () => {
+  test('focuses on the canonical course while preserving every interactive lab', () => {
     renderWithProviders(<LearningHomePage />);
 
-    expect(screen.getByTestId('learning-home-title')).toHaveTextContent('Open the black box');
-    expect(screen.getByTestId('learning-start-llm')).toHaveAttribute('href', '/learn/tokenization');
-    expect(screen.getByTestId('learning-start-agent')).toHaveAttribute('href', '/learn/agent-loop');
+    expect(screen.getByTestId('learning-home-title')).toHaveTextContent('Follow one token');
+    expect(screen.getByTestId('learning-start-llm')).toHaveAttribute('href', '/learn/how-llm-works/course/prediction-goal');
+    expect(screen.getByTestId('learning-start-agent')).toHaveAttribute('href', '/learn/how-ai-agent-works/course/agent-loop');
     expect(screen.getAllByTestId(/^learning-path-/)).toHaveLength(19);
-    expect(screen.getByTestId('learning-slides-llm')).toHaveAttribute('href', '/learn/how-llm-works/slides?slide=1');
-    expect(screen.getByTestId('learning-slides-agent')).toHaveAttribute('href', '/learn/how-ai-agent-works/slides?slide=1');
-    expect(screen.getByTestId('learning-theory-llm')).toHaveAttribute('href', '/learn/how-llm-works/guide?slide=1');
-    expect(screen.getByTestId('learning-theory-agent')).toHaveAttribute('href', '/learn/how-ai-agent-works/guide?slide=1');
-    expect(screen.getByTestId('learning-materials-llm')).toHaveAttribute('href', '/learn/how-llm-works/materials');
-    expect(screen.getByTestId('learning-materials-agent')).toHaveAttribute('href', '/learn/how-ai-agent-works/materials');
+    expect(screen.queryByTestId(/^learning-slides-/)).not.toBeInTheDocument();
+    expect(screen.queryByTestId(/^learning-theory-/)).not.toBeInTheDocument();
+    expect(screen.queryByTestId(/^learning-materials-/)).not.toBeInTheDocument();
     expect(screen.getByTestId('learning-track-language')).toBeInTheDocument();
     expect(screen.getByTestId('learning-track-semantic')).toBeInTheDocument();
     expect(screen.getByTestId('learning-track-neural')).toBeInTheDocument();
     expect(screen.getByTestId('learning-track-agency')).toBeInTheDocument();
     expect(screen.getByTestId('learning-track-context')).toBeInTheDocument();
     expect(screen.getByTestId('learning-track-safety')).toBeInTheDocument();
-    expect(screen.getByText('Reveal the model’s tokens')).toBeInTheDocument();
-    expect(screen.getByText('Watch tokens gather context')).toBeInTheDocument();
-    expect(screen.getByText('Map semantic similarity')).toBeInTheDocument();
-    expect(screen.getByText('Teach one artificial neuron')).toBeInTheDocument();
-    expect(screen.getByText('Walk downhill on a loss surface')).toBeInTheDocument();
-    expect(screen.getByText('Send credit backward')).toBeInTheDocument();
-    expect(screen.getByText('Change the representation')).toBeInTheDocument();
-    expect(screen.getByText('Measure the cost of context')).toBeInTheDocument();
-    expect(screen.getByText('Recognize a handwritten digit')).toBeInTheDocument();
-    expect(screen.getByText('Watch the prediction form')).toBeInTheDocument();
-    expect(screen.getByText('Step through the agent loop')).toBeInTheDocument();
-    expect(screen.getByText('Delegate without losing control')).toBeInTheDocument();
-    expect(screen.getByText('Trace the context lifecycle')).toBeInTheDocument();
-    expect(screen.getByText('Place durable information deliberately')).toBeInTheDocument();
-    expect(screen.getByText('Attach logic to lifecycle events')).toBeInTheDocument();
-    expect(screen.getByText('Validate tools and permissions')).toBeInTheDocument();
-    expect(screen.getByText('Evaluate outcomes and reliability')).toBeInTheDocument();
+    expect(screen.getByTestId('learning-canonical-llm-course')).toHaveTextContent('One question at a time');
+    expect(screen.getAllByTestId(/^course-path-/)).toHaveLength(10);
+    expect(screen.getAllByTestId(/^agent-course-path-/)).toHaveLength(8);
+    expect(screen.getByTestId('learning-library')).not.toHaveAttribute('open');
+    expect(screen.getByTestId('learning-library-toggle')).toHaveTextContent('Open any interactive lab');
   });
 });

@@ -21,7 +21,7 @@ export const residualNarrative: LabNarrative = {
   takeaway: 'Residual connections turn many attention and MLP updates into one evolving representation.',
   limitation: 'The lab uses an illustrative trace; the current Bonsai runtime does not expose hidden states, and logit-lens projections can be misleading.',
   bridge: 'The final residual state is unembedded into logits, which become next-token probabilities.',
-  hookNotes: 'Connect the lab to the book’s Wikipedia example: one row changes from the embedding of “very” toward a continuation such as “important”.',
+  hookNotes: 'Keep the shared sentence visible: the last row begins at “too” and develops evidence for continuations such as “tired” and “frightened”.',
   mechanismNotes: 'Keep attention and MLP as updates to the same stream. Do not describe layers as independent voters.',
   exerciseNotes: 'Ask participants to predict whether the leader will move monotonically before they scrub.',
   debriefNotes: 'Contrast internal token representations here with the separate sentence embeddings used for retrieval.',

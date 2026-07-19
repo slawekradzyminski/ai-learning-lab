@@ -18,7 +18,7 @@ describe('AttentionLabPage', () => {
     expect(screen.getByTestId('attention-stage-softmax')).toHaveTextContent('row sum = 1.000000');
 
     fireEvent.click(screen.getByTestId('attention-stage-button-output'));
-    expect(screen.getByTestId('attention-stage-output')).toHaveTextContent('New attention output for “tired”');
+    expect(screen.getByTestId('attention-stage-output')).toHaveTextContent('New attention output for “too”');
   });
 
   test('keeps token selection, heatmap rows, and causal comparison synchronized', () => {

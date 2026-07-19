@@ -8,23 +8,25 @@ export type AgentTraceStep = {
 };
 
 const happyTrace: AgentTraceStep[] = [
-  { actor: 'user', label: 'Goal enters the harness', detail: 'Find the best electronics option under €900.' },
+  { actor: 'user', label: 'Goal enters the harness', detail: 'Research three laptops under €900, verify current evidence, and write laptop-comparison.md. Do not purchase or contact a vendor.' },
   { actor: 'harness', label: 'Context is assembled', detail: 'Instructions, history, and available tool schemas are sent to the model.', payload: 'model + tools + messages' },
-  { actor: 'model', label: 'Model proposes a tool call', detail: 'The response asks the harness to list matching products.', payload: 'list_products({ category: "electronics" })' },
+  { actor: 'model', label: 'Model proposes a tool call', detail: 'The response asks the harness to find matching laptop records.', payload: 'search_catalog({ category: "laptops", max_price_eur: 900 })' },
   { actor: 'tool', label: 'Harness validates and executes', detail: 'The schema and policy pass, so application code runs the tool.', payload: '3 matching products' },
   { actor: 'harness', label: 'Tool result becomes an observation', detail: 'The result is appended to the message history for another model turn.' },
-  { actor: 'model', label: 'Model requests one detail', detail: 'The next decision asks for the strongest candidate’s current snapshot.', payload: 'get_product_snapshot({ name: "Laptop Pro" })' },
-  { actor: 'tool', label: 'Environment returns evidence', detail: 'The tool reports price, stock, and rating.', payload: '€849 · in stock · 4.8/5' },
-  { actor: 'final', label: 'Model returns a final answer', detail: 'The loop stops because the model responds without another tool call.' },
+  { actor: 'model', label: 'Model requests current evidence', detail: 'The next proposal asks for the price, specifications, source, and retrieval time for a candidate.', payload: 'fetch_product({ id: "laptop-pro" })' },
+  { actor: 'tool', label: 'Environment returns evidence', detail: 'The tool reports a sourced, timestamped product snapshot.', payload: '€849 · 16 GB RAM · source + retrieved_at' },
+  { actor: 'model', label: 'Model proposes the approved deliverable', detail: 'After verifying all three records, the model requests a workspace-only report write.', payload: 'write_report({ path: "laptop-comparison.md", ... })' },
+  { actor: 'tool', label: 'Harness verifies the effect', detail: 'The report exists at the approved path and contains three sourced comparisons.' },
+  { actor: 'final', label: 'Model returns a final answer', detail: 'The harness accepts the stop because the deliverable is verified and no external commitment occurred.' },
 ];
 
 const recoveryTrace: AgentTraceStep[] = [
   ...happyTrace.slice(0, 3),
   { actor: 'tool', label: 'Tool execution fails', detail: 'The catalog service times out. The failure is data, not a hidden exception.', payload: '503 catalog unavailable' },
   { actor: 'harness', label: 'Failure becomes an observation', detail: 'The error is appended with retry limits and the model gets another turn.' },
-  { actor: 'model', label: 'Model adapts its plan', detail: 'It chooses a narrower cached-search tool instead of repeating blindly.', payload: 'search_cached_catalog({ query: "electronics under 900" })' },
-  { actor: 'tool', label: 'Fallback tool succeeds', detail: 'The environment returns a smaller but usable result set.', payload: '2 cached matches' },
-  { actor: 'final', label: 'Model answers with a limitation', detail: 'The loop stops with a recommendation that identifies the stale data source.' },
+  { actor: 'model', label: 'Model adapts its plan', detail: 'It retries once with a narrower query instead of repeating blindly.', payload: 'search_catalog({ category: "laptops", max_price_eur: 850 })' },
+  { actor: 'tool', label: 'Fallback tool succeeds', detail: 'The environment returns a smaller current result set.', payload: '2 current matches' },
+  { actor: 'final', label: 'Model answers with a limitation', detail: 'The loop stops without writing a misleading three-product report and identifies the missing evidence.' },
 ];
 
 export function getAgentTrace(includeFailure: boolean): AgentTraceStep[] {
@@ -93,10 +95,10 @@ export type TeachingToolCall = {
 };
 
 export const TEACHING_TOOL_CALLS: TeachingToolCall[] = [
-  { name: 'read_catalog', risk: 'read', arguments: { category: 'electronics' }, required: ['category'] },
-  { name: 'send_email', risk: 'write', arguments: { to: 'trainer@example.com', subject: 'Lab summary' }, required: ['to', 'subject'] },
-  { name: 'delete_workspace', risk: 'destructive', arguments: { path: '/workspace/demo' }, required: ['path'] },
-  { name: 'send_email', risk: 'write', arguments: { subject: 'Missing recipient' }, required: ['to', 'subject'] },
+  { name: 'search_catalog', risk: 'read', arguments: { category: 'laptops', max_price_eur: '900' }, required: ['category', 'max_price_eur'] },
+  { name: 'write_report', risk: 'write', arguments: { path: 'laptop-comparison.md', format: 'markdown' }, required: ['path', 'format'] },
+  { name: 'purchase_product', risk: 'destructive', arguments: { product_id: 'laptop-pro', price_eur: '849' }, required: ['product_id', 'price_eur'] },
+  { name: 'write_report', risk: 'write', arguments: { format: 'markdown' }, required: ['path', 'format'] },
 ];
 
 export function evaluateToolCall(call: TeachingToolCall, policy: PermissionPolicy): { decision: ToolDecision; reason: string } {

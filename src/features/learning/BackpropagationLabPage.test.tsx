@@ -35,7 +35,7 @@ describe('BackpropagationLabPage', () => {
     fireEvent.click(screen.getByTestId('backprop-relu-choice-first'));
     fireEvent.click(screen.getByTestId('backprop-relu-check'));
     expect(screen.getByTestId('backprop-relu-feedback')).toHaveTextContent('Correct');
-    expect(screen.getByTestId('backprop-slides-link')).toHaveAttribute('href', '/learn/how-llm-works/slides?slide=39');
+    expect(screen.queryByTestId('backprop-slides-link')).not.toBeInTheDocument();
     expect(screen.getByTestId('backprop-depth-link')).toHaveAttribute('href', '/learn/depth');
   });
 });

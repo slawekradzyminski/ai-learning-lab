@@ -2,6 +2,40 @@
 
 This document is the explicit extraction contract for the standalone application. The `/learn/` home page links to a complete materials index for each course, so labs, exercises, slides, and theory are directly discoverable.
 
+## Canonical LLM learner path
+
+`/learn/how-llm-works/course/prediction-goal` starts a ten-lesson journey that follows one sentence through transformer inference:
+
+1. Prediction goal
+2. Tokenization
+3. Token and position embeddings
+4. Transformer block
+5. Attention
+6. Residual stream
+7. Language-model head
+8. Generation and KV cache
+9. Learning
+10. Capstone reconstruction
+
+Each lesson is one learner flow: question, representation change, experiment, visible plain-language explanation, misconception correction, checkpoint, and forward bridge. Optional notation and annotated sources stay behind quiet disclosures. Instructor material remains in the dedicated presentation deck instead of competing with the learner page. Browser-local completion state records progress. The deterministic glass-box lane and live Bonsai evidence remain explicitly distinguished inside the relevant explanations.
+
+The existing 19 labs remain directly addressable as the deeper exercise library. Semantic retrieval and neural-learning/vision remain optional branches rather than interruptions in the core transformer story.
+
+## Canonical AI Agents learner path
+
+`/learn/how-ai-agent-works/course/agent-loop` starts an eight-lesson journey that follows one bounded research task through an agent runtime:
+
+1. Controlled agent loop
+2. Subagent delegation contracts
+3. Context harness
+4. Memory and instruction placement
+5. Lifecycle hooks
+6. Tool and permission boundaries
+7. Agent evaluations
+8. Complete-system capstone
+
+Every lesson reuses the goal to research three laptops under €900 and write `laptop-comparison.md` without purchasing or contacting a vendor. The recurring scenario makes ownership visible: the model proposes, the harness selects context and mediates effects, tools interact with the environment, and evaluators inspect both the trace and terminal state. Each lesson combines its existing browser lab, a long-form chapter, diagrams, misconception clinic, exercises, glossary, checkpoint, presenter-slide link, and explicit forward bridge. Browser-local progress is independent from the LLM course.
+
 ## Inventory summary
 
 | Material | LLM course | AI agents course | Total |
@@ -10,10 +44,10 @@ This document is the explicit extraction contract for the standalone application
 | Instructor slides | 53 | 33 | 86 |
 | Slide-matched theory sections | 53 | 33 | 86 |
 | Practical exercise slides | 12 | 7 | 19 |
-| Learning feature test files |  |  | 42 |
+| Learning feature test files |  |  | 57 |
 | Pinned Bonsai tokenizer files |  |  | 4 |
 
-The 42 standalone learning tests consist of all 40 tests from the source feature plus two tests for the new complete-materials index.
+The current suite contains 170 unit and component tests across 57 test files, including structural quality gates for every canonical long-form chapter.
 
 ## LLM course
 
@@ -62,6 +96,7 @@ The 42 standalone learning tests consist of all 40 tests from the source feature
 - `/learn/how-llm-works/slides?slide=1`
 - `/learn/how-llm-works/guide?slide=1`
 - `/learn/how-ai-agent-works/materials`
+- `/learn/how-ai-agent-works/course/agent-loop`
 - `/learn/how-ai-agent-works/slides?slide=1`
 - `/learn/how-ai-agent-works/guide?slide=1`
 
@@ -69,13 +104,13 @@ Each materials page links every chapter to its interactive lab, question, mechan
 
 ## Extraction audit
 
-Run the automated comparison against the sibling source repository:
+Run the automated comparison against the immutable initial extraction commit:
 
 ```bash
 npm run audit:extraction
 ```
 
-Set `AI_LAB_SOURCE_ROOT` when the original frontend repository is not located at `../vite-react-frontend`. The audit fails when a source learning file, support component, tokenizer asset, or source test is missing or unexpectedly changed.
+Commit `a8bd642` is the immutable extraction baseline that was verified against the original frontend before its learning implementation was removed. The audit fails when a baseline learning file, support component, tokenizer asset, or source test is missing or unexpectedly changed. It therefore remains reproducible without keeping a second copy of the source feature.
 
 ## Host bindings intentionally replaced
 
@@ -83,7 +118,7 @@ The original `/learn` feature was embedded in a larger commerce application. The
 
 | Original host concern | Standalone equivalent |
 |---|---|
-| Protected `/learn` block inside the commerce `AppRoutes.tsx` | Public, focused routes in `src/AppRoutes.tsx` |
+| Protected `/learn` block inside the commerce `AppRoutes.tsx` | Focused routes plus a narrow auth boundary that validates the existing platform session |
 | Commerce navigation link and its navigation test | Dedicated AI Learning Lab header plus home and E2E coverage |
 | Full auth, cart, product, email, and Ollama API client | Narrow three-method learning runtime adapter in `src/lib/api.ts` |
 | React Query and commerce toast test wrapper | Minimal router-based learning test wrapper |

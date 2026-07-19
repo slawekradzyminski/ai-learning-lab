@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { Axis3d, Braces, LoaderCircle, Radio, Sparkles } from 'lucide-react';
+import { Axis3d, LoaderCircle, Radio, Sparkles } from 'lucide-react';
 import { LabPageHeader } from './LabPageHeader';
+import { EmbeddingSpace3DLauncher } from './EmbeddingSpace3DLauncher';
 import {
   cosineSimilarityMatrix,
   GUIDED_EMBEDDING_INPUTS,
@@ -109,11 +110,11 @@ export function EmbeddingsLabPage() {
         <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white/85" data-testid="embeddings-workspace">
           <div className="flex flex-col gap-3 border-b border-stone-200 px-5 py-5 md:flex-row md:items-center md:justify-between md:px-7">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">{mode === 'guided' ? 'Four-dimensional teaching fixture' : 'Live Ollama embeddings'}</p>
-              <h2 className="mt-2 text-xl font-semibold text-slate-950">Semantic distance at a glance</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">{mode === 'guided' ? `${vectors[0]?.length ?? 0}-dimensional teaching fixture` : 'Live Ollama embeddings'}</p>
+              <h2 className="mt-2 text-xl font-semibold text-slate-950">Start with a simple map</h2>
             </div>
             <div className="text-left text-xs leading-5 text-slate-500 md:text-right" data-testid="embeddings-metadata">
-              <p>{mode === 'guided' ? 'Inspectable 4D vectors' : live.result?.modelLabel}</p>
+              <p>{mode === 'guided' ? `Inspectable ${vectors[0]?.length ?? 0}D vectors` : live.result?.modelLabel}</p>
               <p>{vectors[0]?.length ?? 0} dimensions{live.result ? ` · ${live.result.promptTokenCount} prompt tokens` : ''}</p>
             </div>
           </div>
@@ -180,10 +181,12 @@ export function EmbeddingsLabPage() {
             </div>
           </div>
 
-          <div className="grid gap-5 border-t border-stone-200 bg-stone-50/70 p-5 md:grid-cols-3 md:p-7">
-            <div><Braces className="h-5 w-5 text-sky-600" /><p className="mt-3 text-sm font-semibold text-slate-950">Hundreds of coordinates</p><p className="mt-1 text-sm leading-6 text-slate-600">A real vector has far more dimensions than a screen can show.</p></div>
-            <div><Axis3d className="h-5 w-5 text-sky-600" /><p className="mt-3 text-sm font-semibold text-slate-950">Projection loses information</p><p className="mt-1 text-sm leading-6 text-slate-600">The map preserves a useful view, not every high-dimensional distance.</p></div>
-            <div><Radio className="h-5 w-5 text-sky-600" /><p className="mt-3 text-sm font-semibold text-slate-950">Different model, different job</p><p className="mt-1 text-sm leading-6 text-slate-600">EmbeddingGemma maps meaning; Bonsai predicts and generates tokens.</p></div>
+          <div className="border-t border-stone-200 p-5 md:p-7">
+            <EmbeddingSpace3DLauncher inputs={inputs} vectors={vectors} selectedIndex={selectedIndex} onSelect={setSelectedIndex} />
+          </div>
+
+          <div className="border-t border-stone-200 bg-stone-50/70 p-5 text-sm leading-6 text-slate-600 md:px-7">
+            <strong className="font-semibold text-slate-950">What to notice:</strong> related texts form neighborhoods, but every screen view discards dimensions. Use the map to form a hypothesis; use cosine scores and task-specific retrieval tests to evaluate it.
           </div>
         </section>
       )}

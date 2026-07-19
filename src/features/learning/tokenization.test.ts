@@ -27,7 +27,7 @@ describe('tokenization', () => {
     expect(polish[0].byteCount).toBeGreaterThan(polish[0].characterCount);
   });
 
-  test('loads the pinned Bonsai base tokenizer and returns exact Qwen IDs', async () => {
+  test('loads the pinned Qwen tokenizer used by Bonsai and returns exact IDs', async () => {
     const assetRoot = resolve(process.cwd(), 'public/learning-models/bonsai-tokenizer');
     const assets: Record<string, unknown> = {
       'tokenizer.json': JSON.parse(await readFile(resolve(assetRoot, 'tokenizer.json'), 'utf8')),

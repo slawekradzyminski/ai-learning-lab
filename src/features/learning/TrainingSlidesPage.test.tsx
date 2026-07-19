@@ -26,7 +26,7 @@ describe('TrainingSlidesPage', () => {
     expect(screen.getByTestId('slides-title')).toHaveTextContent('Find the bottom');
     expect(screen.getByTestId('training-slide-frame')).toHaveClass('mx-auto', 'w-full', 'max-w-6xl');
     fireEvent.click(screen.getByTestId('slides-next'));
-    expect(screen.getByTestId('slides-title')).toHaveTextContent('From text to generated token');
+    expect(screen.getByTestId('slides-title')).toHaveTextContent('Inspect the mechanisms independently');
     expect(window.location.search).toBe('?slide=2');
 
     fireEvent.keyDown(window, { key: 'ArrowRight' });

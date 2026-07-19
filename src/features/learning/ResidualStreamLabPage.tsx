@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, BookOpen, ScanSearch } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { gpt2 } from '../../lib/api';
+import type { Gpt2InspectorStatus } from '../../types/gpt2';
+import { Gpt2LiveResidualStream } from './Gpt2LiveResidualStream';
 import { LabPageHeader } from './LabPageHeader';
 import { LearningCheckpoint } from './LearningCheckpoint';
 import { RESIDUAL_LAYERS, RESIDUAL_PROMPT_TOKENS, residualLayerAt } from './residualStreamMath';
@@ -13,21 +16,36 @@ function valueColor(value: number): string {
   return 'bg-stone-100 text-slate-400';
 }
 
-export function ResidualStreamLabPage() {
+export function ResidualStreamLabPage({ embedded = false }: { embedded?: boolean }) {
+  const [source, setSource] = useState<'guided' | 'gpt2'>('guided');
+  const [gpt2Status, setGpt2Status] = useState<Gpt2InspectorStatus | null>(null);
   const [selectedLayer, setSelectedLayer] = useState(0);
   const layer = residualLayerAt(selectedLayer);
   const maxProbability = Math.max(...layer.candidates.map(({ probability }) => probability));
 
+  useEffect(() => {
+    let active = true;
+    void gpt2.getStatus()
+      .then((status) => { if (active) setGpt2Status(status); })
+      .catch(() => { if (active) setGpt2Status(null); });
+    return () => { active = false; };
+  }, []);
+
   return (
     <div className="space-y-6" data-testid="residual-stream-lab-page">
-      <LabPageHeader
+      {!embedded ? <LabPageHeader
         eyebrow="Language systems · step 3"
         title="Watch the prediction form"
         description="Scrub through a compact teaching trace of the last token’s residual stream, then apply an intermediate vocabulary projection—a logit lens—to see candidate continuations change."
         aside="Embedding + updates → logits"
-      />
+      /> : null}
 
-      <div className="rounded-[1.5rem] border border-sky-200 bg-sky-50/75 p-4 text-sm leading-6 text-sky-950" role="note" data-testid="residual-provenance">
+      <div className="flex flex-wrap items-center gap-2" aria-label="Residual evidence source">
+        <button type="button" onClick={() => setSource('guided')} aria-pressed={source === 'guided'} className={`min-h-11 rounded-full px-4 text-sm font-semibold transition ${source === 'guided' ? 'bg-slate-950 text-white' : 'border border-stone-200 bg-white text-slate-600 hover:border-slate-400'}`}>Guided walkthrough</button>
+        {gpt2Status?.available ? <button type="button" onClick={() => setSource('gpt2')} aria-pressed={source === 'gpt2'} className={`min-h-11 rounded-full px-4 text-sm font-semibold transition ${source === 'gpt2' ? 'bg-sky-500 text-slate-950' : 'border border-sky-200 bg-sky-50 text-sky-800 hover:border-sky-400'}`} data-testid="gpt2-live-residual-source">Inspect live GPT-2</button> : null}
+      </div>
+
+      {source === 'guided' ? <><div className="rounded-[1.5rem] border border-sky-200 bg-sky-50/75 p-4 text-sm leading-6 text-sky-950" role="note" data-testid="residual-provenance">
         This is an inspectable teaching trace inspired by Chapter 7 of <em>The Welch Labs Illustrated Guide to AI</em>. Bonsai’s hidden states are not exposed by the current runtime, so these values are illustrative—not captured Bonsai activations.
       </div>
 
@@ -77,14 +95,14 @@ export function ResidualStreamLabPage() {
             <p className="mt-6 text-xs leading-5 text-slate-500">An intermediate projection is a probe. It does not prove that a layer “believes” a word or that each coordinate has a stable human meaning.</p>
           </div>
         </div>
-      </section>
+      </section></> : <Gpt2LiveResidualStream />}
 
-      <LearningCheckpoint id="residual-update" question="What persists between transformer blocks?" choices={[{ value: 'probabilities', label: 'The final probability distribution' }, { value: 'stream', label: 'A token-position matrix updated by residual additions' }, { value: 'queries', label: 'Every query from every earlier layer' }]} correctValue="stream" explanation="Each block reads the current residual stream and adds an update. The final state is normalized and unembedded into vocabulary logits." />
+      {!embedded ? <LearningCheckpoint id="residual-update" question="What persists between transformer blocks?" choices={[{ value: 'probabilities', label: 'The final probability distribution' }, { value: 'stream', label: 'A token-position matrix updated by residual additions' }, { value: 'queries', label: 'Every query from every earlier layer' }]} correctValue="stream" explanation="Each block reads the current residual stream and adds an update. The final state is normalized and unembedded into vocabulary logits." /> : null}
 
-      <section className="grid gap-5 rounded-[2rem] bg-slate-950 p-6 text-white md:grid-cols-[1fr_auto] md:items-center md:p-8">
+      {!embedded ? <section className="grid gap-5 rounded-[2rem] bg-slate-950 p-6 text-white md:grid-cols-[1fr_auto] md:items-center md:p-8">
         <div><p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-300"><BookOpen className="h-4 w-4" /> Representation bridge</p><h2 className="mt-3 text-2xl font-semibold">Now turn the final state into a choice.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">The next-token lab starts where this one stops: logits become probabilities, then decoding selects one token.</p></div>
         <Link to="/learn/next-token" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-sky-400 px-5 text-sm font-semibold text-slate-950">Open next-token lab <ArrowRight className="h-4 w-4" /></Link>
-      </section>
+      </section> : null}
     </div>
   );
 }

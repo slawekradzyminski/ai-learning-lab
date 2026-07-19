@@ -12,6 +12,7 @@ describe('AgentLoopLabPage', () => {
     fireEvent.click(screen.getByTestId('agent-loop-run'));
     expect(screen.getByTestId('agent-loop-current-label')).toHaveTextContent('final answer');
     expect(screen.getByTestId('agent-loop-live-link')).toHaveAttribute('href', '/llm/tools');
+    expect(screen.getByTestId('agent-loop-live-link')).toHaveAttribute('data-navigation', 'document');
   });
 
   test('turns a tool failure into a visible recovery observation', () => {

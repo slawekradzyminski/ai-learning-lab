@@ -41,16 +41,16 @@ describe('attention math', () => {
   test('builds the complete subject-signal attention trace', () => {
     const trace = buildAttentionTrace(ATTENTION_EXAMPLES[0]);
 
-    expect(trace.representations[0]).toEqual([0.2, 0.4]);
-    expect(trace.representations[1][0]).toBeCloseTo(1.4, 10);
-    expect(trace.representations[1][1]).toBe(0);
+    expect(trace.representations[0]).toEqual([1.3, 0]);
+    expect(trace.representations[1][0]).toBeCloseTo(0.3, 10);
+    expect(trace.representations[1][1]).toBe(0.4);
     expect(trace.representations[2]).toEqual([0.1, 1.2]);
     expect(trace.representations[3]).toEqual([0.8, 1]);
     expect(trace.queries[3][0]).toBeCloseTo(1.4, 10);
     expect(trace.queries[3][1]).toBeCloseTo(0, 10);
-    expect(trace.scaledScores[3][1]).toBeCloseTo(1.385929, 5);
+    expect(trace.scaledScores[3][0]).toBeCloseTo(1.286934, 5);
     expect(trace.attentionWeights[3].reduce((sum, value) => sum + value, 0)).toBeCloseTo(1, 10);
-    expect(dominantAttentionIndex(trace, 3)).toBe(1);
+    expect(dominantAttentionIndex(trace, 3)).toBe(0);
     expect(trace.outputs).toHaveLength(4);
     expect(trace.outputs[3]).toHaveLength(2);
   });

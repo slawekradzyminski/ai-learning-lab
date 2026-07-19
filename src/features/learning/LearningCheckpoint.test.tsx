@@ -1,10 +1,11 @@
 import { fireEvent, screen } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { renderWithProviders } from '../../test/test-utils';
 import { LearningCheckpoint } from './LearningCheckpoint';
 
 describe('LearningCheckpoint', () => {
   test('requires a committed answer before revealing feedback and supports retry', () => {
+    const onCorrect = vi.fn();
     renderWithProviders(
       <LearningCheckpoint
         id="example"
@@ -12,6 +13,7 @@ describe('LearningCheckpoint', () => {
         choices={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]}
         correctValue="b"
         explanation="B follows from the calculation."
+        onCorrect={onCorrect}
       />,
     );
 
@@ -27,5 +29,6 @@ describe('LearningCheckpoint', () => {
     fireEvent.click(screen.getByTestId('example-choice-b'));
     fireEvent.click(screen.getByTestId('example-check'));
     expect(screen.getByTestId('example-feedback')).toHaveTextContent('Correct');
+    expect(onCorrect).toHaveBeenCalledOnce();
   });
 });

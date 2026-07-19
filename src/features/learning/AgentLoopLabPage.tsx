@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { AlertTriangle, ArrowRight, Bot, Check, ChevronRight, Play, Radio, RotateCcw, Wrench } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { LabPageHeader } from './LabPageHeader';
 import { LearningCheckpoint } from './LearningCheckpoint';
 import { getAgentTrace, type AgentActor } from './agentHarnessMath';
@@ -35,7 +34,7 @@ export function AgentLoopLabPage() {
 
       <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white/85">
         <div className="flex flex-col gap-4 border-b border-stone-200 p-5 md:flex-row md:items-center md:justify-between md:px-7">
-          <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Guided run</p><h2 className="mt-2 text-xl font-semibold text-slate-950">Find the best electronics option under €900</h2></div>
+          <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Guided run</p><h2 className="mt-2 text-xl font-semibold text-slate-950">Research three laptops under €900—without purchasing</h2></div>
           <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold text-slate-700">
             <input type="checkbox" checked={includeFailure} onChange={(event) => reset(event.target.checked)} className="h-5 w-5 accent-amber-600" data-testid="agent-loop-failure-toggle" /> Inject a tool failure
           </label>
@@ -71,7 +70,7 @@ export function AgentLoopLabPage() {
 
       <section className="grid gap-5 rounded-[2rem] bg-slate-950 p-6 text-white md:grid-cols-[1fr_auto] md:items-center md:p-8">
         <div><p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-300"><Radio className="h-4 w-4" /> Guided → live</p><h2 className="mt-3 text-2xl font-semibold">Run the real Bonsai tool loop.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">This lab keeps every boundary deterministic and inspectable. The existing tool-chat experience uses the live local model and application tools, so outputs can vary.</p></div>
-        <Link to="/llm/tools" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-amber-300 px-5 text-sm font-semibold text-slate-950" data-testid="agent-loop-live-link">Open live tool chat <ArrowRight className="h-4 w-4" /></Link>
+        <a href="/llm/tools" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-amber-300 px-5 text-sm font-semibold text-slate-950" data-testid="agent-loop-live-link" data-navigation="document">Open live tool chat <ArrowRight className="h-4 w-4" /></a>
       </section>
 
       <p className="text-xs leading-5 text-slate-500">Research basis: <a className="underline" href="https://ccunpacked.dev/" target="_blank" rel="noreferrer">Claude Code Unpacked agent loop</a> and <a className="underline" href="https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/" target="_blank" rel="noreferrer">OpenAI’s practical guide to building agents</a>.</p>

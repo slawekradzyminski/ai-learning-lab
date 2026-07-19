@@ -25,13 +25,13 @@ describe('DepthLabPage', () => {
     expect(screen.getByTestId('depth-truth-table')).toHaveTextContent('output');
   });
 
-  test('includes a prediction checkpoint and workshop handoff links', () => {
+  test('includes a prediction checkpoint and next practical handoff', () => {
     renderWithProviders(<DepthLabPage />);
 
     fireEvent.click(screen.getByTestId('depth-xor-choice-110'));
     fireEvent.click(screen.getByTestId('depth-xor-check'));
     expect(screen.getByTestId('depth-xor-feedback')).toHaveTextContent('Correct');
-    expect(screen.getByTestId('depth-slides-link')).toHaveAttribute('href', '/learn/how-llm-works/slides?slide=43');
+    expect(screen.queryByTestId('depth-slides-link')).not.toBeInTheDocument();
     expect(screen.getByTestId('depth-convolution-link')).toHaveAttribute('href', '/learn/convolution');
   });
 });

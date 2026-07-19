@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -14,6 +14,9 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Badge } from '../../components/ui/badge';
+import { gpt2 } from '../../lib/api';
+import type { Gpt2InspectorStatus } from '../../types/gpt2';
+import { Gpt2LiveAttention } from './Gpt2LiveAttention';
 import { LabPageHeader } from './LabPageHeader';
 import { LearningCheckpoint } from './LearningCheckpoint';
 import {
@@ -265,7 +268,9 @@ function StageWorkspace({
   );
 }
 
-export function AttentionLabPage() {
+export function AttentionLabPage({ embedded = false }: { embedded?: boolean }) {
+  const [source, setSource] = useState<'guided' | 'gpt2'>('guided');
+  const [gpt2Status, setGpt2Status] = useState<Gpt2InspectorStatus | null>(null);
   const [exampleId, setExampleId] = useState<AttentionExample['id']>('subject');
   const [selectedIndex, setSelectedIndex] = useState(3);
   const [stage, setStage] = useState<AttentionStage>('representations');
@@ -276,6 +281,14 @@ export function AttentionLabPage() {
   const dominantIndex = dominantAttentionIndex(trace, selectedIndex, causal);
   const stageCopy = STAGES.find((candidate) => candidate.id === stage) ?? STAGES[0];
 
+  useEffect(() => {
+    let active = true;
+    void gpt2.getStatus()
+      .then((status) => { if (active) setGpt2Status(status); })
+      .catch(() => { if (active) setGpt2Status(null); });
+    return () => { active = false; };
+  }, []);
+
   const chooseExample = (nextId: AttentionExample['id']) => {
     setExampleId(nextId);
     setSelectedIndex(3);
@@ -285,14 +298,19 @@ export function AttentionLabPage() {
 
   return (
     <div data-testid="attention-lab-page">
-      <LabPageHeader
+      {!embedded ? <LabPageHeader
         eyebrow="Language model inference · step 2"
         title="Watch one token gather context"
         description="Follow one inspectable attention head through representations, Q/K/V projections, scaled scores, causal masking, softmax, and a value-weighted output."
         aside="Guided 2D attention head"
-      />
+      /> : null}
 
-      <div className="mb-6 flex items-start gap-3 rounded-[1.5rem] border border-amber-200 bg-amber-50/85 p-4 text-amber-950" role="status" data-testid="attention-provenance">
+      <div className="mb-6 flex flex-wrap items-center gap-2" aria-label="Attention evidence source">
+        <button type="button" onClick={() => setSource('guided')} aria-pressed={source === 'guided'} className={`min-h-11 rounded-full px-4 text-sm font-semibold transition ${source === 'guided' ? 'bg-slate-950 text-white' : 'border border-stone-200 bg-white text-slate-600 hover:border-slate-400'}`}>Calculate by hand</button>
+        {gpt2Status?.available ? <button type="button" onClick={() => setSource('gpt2')} aria-pressed={source === 'gpt2'} className={`min-h-11 rounded-full px-4 text-sm font-semibold transition ${source === 'gpt2' ? 'bg-sky-500 text-slate-950' : 'border border-sky-200 bg-sky-50 text-sky-800 hover:border-sky-400'}`} data-testid="gpt2-live-source">Inspect live GPT-2</button> : null}
+      </div>
+
+      {source === 'guided' ? <><div className="mb-6 flex items-start gap-3 rounded-[1.5rem] border border-amber-200 bg-amber-50/85 p-4 text-amber-950" role="status" data-testid="attention-provenance">
         <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
         <div>
           <p className="text-sm font-semibold">Exact teaching calculation—not captured Bonsai internals</p>
@@ -435,21 +453,21 @@ export function AttentionLabPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section></> : <Gpt2LiveAttention />}
 
-      <div className="mt-6">
+      {!embedded && source === 'guided' ? <div className="mt-6">
         <LearningCheckpoint
           id="attention-subject"
-          question="In the Subject signal preset, which earlier token should receive the largest weight from “tired”?"
+          question="In the Subject signal preset, which earlier token should receive the largest weight from “too”?"
           choices={[
-            { value: 'the', label: 'The' },
+            { value: 'street', label: 'street' },
             { value: 'animal', label: 'animal' },
             { value: 'was', label: 'was' },
           ]}
           correctValue="animal"
-          explanation="The query for “tired” is [1.40, 0.00]. Its scaled dot product is largest with the key for “animal”, so softmax assigns that earlier token the greatest weight."
+          explanation="The query for “too” is [1.40, 0.00]. Its scaled dot product is largest with the key for “animal”, so softmax assigns that earlier token the greatest weight."
         />
-      </div>
+      </div> : null}
 
       <section className="mt-6 border-y border-stone-200 py-7" aria-labelledby="attention-theory-heading">
         <div className="flex items-center gap-3">
@@ -478,9 +496,9 @@ export function AttentionLabPage() {
         </Link>
       </section>
 
-      <p className="mt-5 flex items-center justify-center gap-2 text-center text-xs leading-5 text-slate-500">
+      {source === 'guided' ? <p className="mt-5 flex items-center justify-center gap-2 text-center text-xs leading-5 text-slate-500">
         <Calculator className="h-4 w-4" /> All values are recomputed from the displayed matrices. <Sigma className="h-4 w-4" /> Display rounding never feeds back into the calculation.
-      </p>
+      </p> : null}
     </div>
   );
 }

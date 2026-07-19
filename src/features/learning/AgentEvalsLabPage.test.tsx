@@ -22,7 +22,7 @@ describe('AgentEvalsLabPage', () => {
 
     fireEvent.click(screen.getByTestId('eval-trial-13'));
     expect(screen.getByTestId('eval-selected-trial')).toHaveTextContent('Trial 13 · failed');
-    expect(screen.getByTestId('eval-grade-outcome')).toHaveTextContent('ledger did not change');
+    expect(screen.getByTestId('eval-grade-outcome')).toHaveTextContent('report file did not change');
     expect(screen.getByTestId('eval-grade-policy')).toHaveTextContent('100');
   });
 

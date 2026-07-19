@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Binary, Braces, Languages, LoaderCircle, Radio, Sparkles } from 'lucide-react';
 import { DEFAULT_OLLAMA_MODEL, DEFAULT_OLLAMA_MODEL_LABEL } from '../../lib/ollamaDefaults';
+import { tokenizeWithBonsai } from './bonsaiTokenizer';
 import { LabPageHeader } from './LabPageHeader';
 import { guidedTokenize, type TokenizationResult, type TokenizerManifest } from './tokenization';
 import { useLiveTokenCount } from './useLearningModel';
+import { LLM_COURSE_PROMPT } from './course/courseScenario';
 
 type TokenMode = 'guided' | 'bonsai';
 
 const PRESETS = [
-  { label: 'Plain English', text: 'Tokenization turns text into pieces.' },
+  { label: 'Course sentence', text: LLM_COURSE_PROMPT },
   { label: 'Leading space', text: ' hello world' },
   { label: 'Polish', text: 'Zażółć gęślą jaźń.' },
   { label: 'Emoji', text: 'AI is useful 🤖✨' },
@@ -26,13 +28,14 @@ function tokenTone(index: number, selected: boolean) {
   return tones[index % tones.length];
 }
 
-export function TokenizationLabPage() {
+export function TokenizationLabPage({ embedded = false }: { embedded?: boolean }) {
   const [mode, setMode] = useState<TokenMode>('guided');
   const [text, setText] = useState(PRESETS[0].text);
   const [model, setModel] = useState(DEFAULT_OLLAMA_MODEL);
   const [modelResult, setModelResult] = useState<(TokenizationResult & { manifest: TokenizerManifest }) | null>(null);
   const [tokenizerError, setTokenizerError] = useState<string | null>(null);
   const [tokenizerLoading, setTokenizerLoading] = useState(false);
+  const [tokenizerAttempt, setTokenizerAttempt] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const verification = useLiveTokenCount();
   const guidedResult = useMemo(() => guidedTokenize(text), [text]);
@@ -43,14 +46,14 @@ export function TokenizationLabPage() {
     setModelResult(null);
     setTokenizerLoading(true);
     setTokenizerError(null);
-    import('./bonsaiTokenizer').then(({ tokenizeWithBonsai }) => tokenizeWithBonsai(text))
+    tokenizeWithBonsai(text)
       .then((result) => {
         if (current) setModelResult(result);
       })
-      .catch((error) => {
+      .catch(() => {
         if (current) {
           setModelResult(null);
-          setTokenizerError(error instanceof Error ? error.message : 'The Bonsai tokenizer could not be loaded.');
+          setTokenizerError('The local tokenizer files could not be loaded.');
         }
       })
       .finally(() => {
@@ -59,7 +62,7 @@ export function TokenizationLabPage() {
     return () => {
       current = false;
     };
-  }, [mode, text]);
+  }, [mode, text, tokenizerAttempt]);
 
   const result = mode === 'guided' ? guidedResult : modelResult;
   const selected = result?.pieces[selectedIndex] ?? result?.pieces[0] ?? null;
@@ -81,21 +84,27 @@ export function TokenizationLabPage() {
 
   return (
     <div data-testid="tokenization-lab-page">
-      <LabPageHeader
+      {!embedded ? <LabPageHeader
         eyebrow="Language models · step 1"
         title="See the pieces the model receives"
-        description="Compare an inspectable teaching tokenizer with the exact Qwen tokenizer used by Bonsai, then verify the prompt count against a real model run."
+        description="Compare an inspectable teaching tokenizer with the pinned Qwen3.6 vocabulary used by Bonsai, then verify the count with a real Bonsai run."
         aside="Text → token IDs"
-      />
+      /> : null}
 
       <div className="mb-5 inline-flex rounded-full border border-stone-200 bg-white p-1" role="group" aria-label="Tokenizer source">
         <button type="button" onClick={() => setMode('guided')} aria-pressed={mode === 'guided'} className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${mode === 'guided' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-stone-100'}`} data-testid="tokenization-mode-guided">
           <Sparkles className="h-4 w-4" /> Guided example
         </button>
         <button type="button" onClick={() => setMode('bonsai')} aria-pressed={mode === 'bonsai'} className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${mode === 'bonsai' ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-stone-100'}`} data-testid="tokenization-mode-bonsai">
-          <Binary className="h-4 w-4" /> Bonsai tokenizer
+          <Binary className="h-4 w-4" /> Bonsai vocabulary
         </button>
       </div>
+
+      {mode === 'bonsai' ? (
+        <p className="mb-5 text-sm leading-6 text-slate-600" data-testid="tokenization-provenance">
+          <strong className="font-semibold text-slate-950">Local tokenizer:</strong> Qwen3.6 vocabulary used by Bonsai 27B. The browser reads a pinned asset; no live model runs until verification.
+        </p>
+      ) : null}
 
       <section className="overflow-hidden rounded-[2rem] bg-slate-950 text-white" data-testid="tokenization-workspace">
         <div className="grid border-b border-white/10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
@@ -135,7 +144,12 @@ export function TokenizationLabPage() {
                 <LoaderCircle className="h-5 w-5 animate-spin text-sky-400" /> Parsing the model vocabulary…
               </div>
             ) : tokenizerError ? (
-              <div className="mt-5 rounded-2xl border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-100" role="alert">{tokenizerError}</div>
+              <div className="mt-5 flex min-h-36 flex-col items-start justify-center gap-3 rounded-2xl border border-amber-300/25 bg-amber-300/10 p-5" role="alert">
+                <p className="text-sm text-amber-50">{tokenizerError}</p>
+                <button type="button" onClick={() => setTokenizerAttempt((attempt) => attempt + 1)} className="min-h-10 border border-amber-100/30 px-4 text-xs font-semibold text-amber-50 transition hover:bg-amber-100/10" data-testid="tokenization-retry">
+                  Retry tokenizer
+                </button>
+              </div>
             ) : (
               <div className="mt-6 flex min-h-36 flex-wrap content-start gap-2" data-testid="tokenization-pieces">
                 {result?.pieces.map((piece, index) => (
@@ -191,7 +205,7 @@ export function TokenizationLabPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Runtime verification</p>
             <h2 className="mt-2 text-xl font-semibold text-slate-950">Ask Bonsai how many prompt tokens it processed</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">The browser creates the exact token pieces immediately. This authenticated request checks the count against a raw one-token Ollama generation.</p>
-            <label htmlFor="tokenization-model" className="mt-5 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Ollama model</label>
+            <label htmlFor="tokenization-model" className="mt-5 block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Live runtime model</label>
             <input id="tokenization-model" value={model} onChange={(event) => { setModel(event.target.value); verification.reset(); }} className="mt-2 h-11 w-full rounded-xl border border-stone-200 bg-white px-3 font-mono text-sm text-slate-950" data-testid="tokenization-model" />
             <button type="submit" disabled={verification.loading || !text.trim()} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-sky-600 px-5 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60" data-testid="tokenization-verify">
               {verification.loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Radio className="h-4 w-4" />}
@@ -204,6 +218,8 @@ export function TokenizationLabPage() {
               <><p className="text-sm font-semibold text-red-300">Live verification unavailable</p><p className="mt-2 text-sm leading-6 text-slate-400" role="alert">{verification.error}</p></>
             ) : verifiedCurrentPrompt && verification.result ? (
               <>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300" data-testid="tokenization-live-badge">Live Bonsai 27B</p>
+                <p className="mt-2 truncate font-mono text-xs text-slate-500">{verification.result.modelLabel}</p>
                 <p className={`text-sm font-semibold ${countMatches ? 'text-emerald-300' : 'text-amber-300'}`}>{countMatches ? 'Counts match' : 'Counts differ'}</p>
                 <div className="mt-4 flex items-end gap-6">
                   <div><p className="text-xs text-slate-500">Browser tokenizer</p><p className="mt-1 text-4xl font-semibold">{result?.pieces.length}</p></div>

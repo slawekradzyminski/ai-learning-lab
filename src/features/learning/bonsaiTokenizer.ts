@@ -37,8 +37,8 @@ export async function tokenizeWithBonsai(text: string): Promise<TokenizationResu
   });
   return {
     source: 'bonsai-tokenizer',
-    sourceLabel: 'Bonsai base tokenizer',
-    modelLabel: `${manifest.modelId} · ${manifest.revision.slice(0, 8)}`,
+    sourceLabel: 'Qwen3.6 tokenizer used by Bonsai 27B',
+    modelLabel: `Pinned ${manifest.modelId} · ${manifest.revision.slice(0, 8)}`,
     pieces,
     manifest,
   };

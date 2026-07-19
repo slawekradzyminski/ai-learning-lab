@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 
-export function MermaidDiagram({ chart }: { chart: string }) {
+export function MermaidDiagram({ chart, testId = 'training-guide-mermaid' }: { chart: string; testId?: string }) {
   const reactId = useId();
   const [svg, setSvg] = useState('');
   const [error, setError] = useState(false);
@@ -33,7 +33,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   return (
     <div
       className="my-8 overflow-x-auto border-y border-stone-200 bg-white py-6 [&_svg]:mx-auto [&_svg]:max-w-full"
-      data-testid="training-guide-mermaid"
+      data-testid={testId}
       // Mermaid receives only trusted diagrams shipped with this application.
       dangerouslySetInnerHTML={{ __html: svg }}
     />

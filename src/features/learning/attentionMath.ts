@@ -1,3 +1,5 @@
+import { LLM_COURSE_ATTENTION_WINDOW } from './course/courseScenario';
+
 export type NumericMatrix = number[][];
 export type MaskedMatrix = Array<Array<number | null>>;
 
@@ -29,8 +31,8 @@ export type AttentionTrace = {
 };
 
 const TOKEN_EMBEDDINGS: NumericMatrix = [
-  [0.2, 0.4],
   [1.3, 0],
+  [0.2, 0.4],
   [0, 1.3],
   [0.5, 1.2],
 ];
@@ -55,7 +57,7 @@ export const ATTENTION_EXAMPLES: AttentionExample[] = [
     id: 'subject',
     label: 'Subject signal',
     description: 'The final query aligns most strongly with the earlier subject representation.',
-    tokens: ['The', 'animal', 'was', 'tired'],
+    tokens: [...LLM_COURSE_ATTENTION_WINDOW],
     tokenEmbeddings: TOKEN_EMBEDDINGS,
     positionEmbeddings: [
       [0, 0],
@@ -71,7 +73,7 @@ export const ATTENTION_EXAMPLES: AttentionExample[] = [
     id: 'position',
     label: 'Position intervention',
     description: 'An exaggerated positional change redirects the final query toward “was”.',
-    tokens: ['The', 'animal', 'was', 'tired'],
+    tokens: [...LLM_COURSE_ATTENTION_WINDOW],
     tokenEmbeddings: TOKEN_EMBEDDINGS,
     positionEmbeddings: [
       [0, 0],

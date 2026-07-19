@@ -27,13 +27,13 @@ describe('GradientDescentLabPage', () => {
     expect(screen.getByText('Loss above start')).toBeInTheDocument();
   });
 
-  test('includes the prediction checkpoint and workshop handoff links', () => {
+  test('includes the prediction checkpoint and next practical handoff', () => {
     renderWithProviders(<GradientDescentLabPage />);
 
     fireEvent.click(screen.getByTestId('gradient-direction-choice-up'));
     fireEvent.click(screen.getByTestId('gradient-direction-check'));
     expect(screen.getByTestId('gradient-direction-feedback')).toHaveTextContent('Correct');
-    expect(screen.getByTestId('gradient-slides-link')).toHaveAttribute('href', '/learn/how-llm-works/slides?slide=35');
+    expect(screen.queryByTestId('gradient-slides-link')).not.toBeInTheDocument();
     expect(screen.getByTestId('gradient-backprop-link')).toHaveAttribute('href', '/learn/backpropagation');
   });
 });

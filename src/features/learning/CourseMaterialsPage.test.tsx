@@ -22,5 +22,7 @@ describe('CourseMaterialsPage', () => {
     expect(screen.getByTestId('course-materials-agent')).toHaveTextContent('33instructor slides');
     expect(screen.getByTestId('materials-lab-agent-loop').querySelector('a[href="/learn/how-ai-agent-works/slides?slide=5"]')).toBeInTheDocument();
     expect(screen.getByTestId('materials-lab-agent-evals')).toHaveTextContent('Evaluate outcomes and reliability');
+    expect(screen.getAllByTestId(/^materials-course-lesson-/)).toHaveLength(8);
+    expect(screen.getByTestId('materials-course-lesson-capstone')).toHaveAttribute('href', '/learn/how-ai-agent-works/course/capstone');
   });
 });

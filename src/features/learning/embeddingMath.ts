@@ -1,4 +1,5 @@
 export type EmbeddingPoint = { x: number; y: number };
+export type EmbeddingPoint3d = EmbeddingPoint & { z: number };
 
 function dot(left: number[], right: number[]): number {
   return left.reduce((sum, value, index) => sum + value * right[index], 0);
@@ -64,16 +65,49 @@ export function projectEmbeddings2d(vectors: number[][]): EmbeddingPoint[] {
   return rawPoints.map(({ x, y }) => ({ x: x / xScale, y: y / yScale }));
 }
 
+export function projectEmbeddings3d(vectors: number[][]): EmbeddingPoint3d[] {
+  if (vectors.length < 2) throw new Error('At least two embeddings are required');
+  const dimensions = vectors[0]?.length ?? 0;
+  if (!dimensions || vectors.some((vector) => vector.length !== dimensions)) {
+    throw new Error('Embedding dimensions must match');
+  }
+
+  const means = Array.from({ length: dimensions }, (_, dimension) =>
+    vectors.reduce((sum, vector) => sum + vector[dimension], 0) / vectors.length);
+  const centered = vectors.map((vector) => vector.map((value, dimension) => value - means[dimension]));
+  let gram = centered.map((left) => centered.map((right) => dot(left, right)));
+  const components = [0, 1, 2].map((seedOffset) => {
+    const component = powerIteration(gram, seedOffset);
+    gram = deflate(gram, component.vector, component.value);
+    return component;
+  });
+  const rawPoints = vectors.map((_, index) => ({
+    x: components[0].vector[index] * Math.sqrt(components[0].value),
+    y: components[1].vector[index] * Math.sqrt(components[1].value),
+    z: components[2].vector[index] * Math.sqrt(components[2].value),
+  }));
+  const scale = Math.max(...rawPoints.flatMap(({ x, y, z }) => [Math.abs(x), Math.abs(y), Math.abs(z)]), 1e-9);
+  return rawPoints.map(({ x, y, z }) => ({ x: x / scale, y: y / scale, z: z / scale }));
+}
+
 export const GUIDED_EMBEDDING_INPUTS = [
   'A puppy is playing outside.',
   'A dog runs through the park.',
   'The database migration failed.',
   'A schema update broke production.',
+  'Fresh coffee helps me focus.',
+  'An espresso starts the morning.',
+  'A good book opens another world.',
+  'The novel kept me reading all night.',
 ];
 
 export const GUIDED_EMBEDDING_VECTORS = [
-  [0.92, 0.72, 0.08, 0.12],
-  [0.86, 0.78, 0.12, 0.08],
-  [0.05, 0.10, 0.91, 0.76],
-  [0.08, 0.14, 0.84, 0.82],
+  [0.92, 0.72, 0.08, 0.12, 0.03, 0.05, 0.04, 0.02],
+  [0.86, 0.78, 0.12, 0.08, 0.04, 0.02, 0.05, 0.03],
+  [0.05, 0.10, 0.91, 0.76, 0.04, 0.06, 0.02, 0.05],
+  [0.08, 0.14, 0.84, 0.82, 0.03, 0.04, 0.05, 0.02],
+  [0.03, 0.06, 0.04, 0.02, 0.90, 0.75, 0.08, 0.04],
+  [0.05, 0.03, 0.02, 0.05, 0.84, 0.82, 0.04, 0.07],
+  [0.04, 0.05, 0.03, 0.05, 0.08, 0.04, 0.92, 0.74],
+  [0.02, 0.04, 0.05, 0.03, 0.04, 0.07, 0.86, 0.81],
 ];

@@ -48,7 +48,7 @@ export const LEARNING_SECTIONS = [
     id: 'llm',
     label: 'Part I',
     title: 'How LLM works?',
-    description: 'Look inside representation, inference, learning, and perception—one inspectable calculation at a time.',
+    description: 'Follow one unfinished sentence through a complete transformer pass, then branch into retrieval, learning foundations, and vision.',
     slidesRoute: '/learn/how-llm-works/slides?slide=1',
     guideRoute: '/learn/how-llm-works/guide?slide=1',
     materialsRoute: '/learn/how-llm-works/materials',
@@ -196,9 +196,9 @@ export const LEARNING_TRACKS: Array<{
   title: string;
   description: string;
 }> = [
-  { id: 'language', section: 'llm', label: 'Track A · Language model inference', title: 'From text to generated token', description: 'Follow one prompt through tokenization, attention, the residual stream, probabilities, and inference memory.' },
-  { id: 'semantic', section: 'llm', label: 'Track B · Semantic systems', title: 'From text to searchable meaning', description: 'Compare sentence-level vectors used for similarity, retrieval, and future RAG exercises.' },
-  { id: 'neural', section: 'llm', label: 'Track C · Neural and vision', title: 'From one neuron to a classifier', description: 'Follow prediction, loss, gradients, feature composition, spatial filters, and a complete digit network.' },
+  { id: 'language', section: 'llm', label: 'Core lab library · Transformer inference', title: 'Inspect the mechanisms independently', description: 'Deep-linkable labs behind the canonical one-token course: tokenizer, attention, residual stream, output head, and inference cache.' },
+  { id: 'semantic', section: 'llm', label: 'Optional path · Semantic search and RAG', title: 'From text to searchable meaning', description: 'Sentence-level vectors for similarity and retrieval are useful, but they are not token embeddings inside the generator.' },
+  { id: 'neural', section: 'llm', label: 'Optional path · Neural networks and vision', title: 'From one neuron to a classifier', description: 'Follow loss, gradients, feature composition, spatial filters, and a complete digit network as a separate mental model.' },
   { id: 'agency', section: 'agent', label: 'Track A · Runtime and delegation', title: 'From goal to coordinated action', description: 'See how a model alternates with tools, then delegates bounded work without losing synthesis or write control.' },
   { id: 'context', section: 'agent', label: 'Track B · Context and persistence', title: 'From environment to durable working state', description: 'Inspect selection, caching, compaction, instructions, memory, skills, and external persistence.' },
   { id: 'safety', section: 'agent', label: 'Track C · Boundaries and evaluation', title: 'From proposal to controlled, measured effect', description: 'Attach deterministic hooks, enforce capabilities, then evaluate repeated traces and observable outcomes.' },

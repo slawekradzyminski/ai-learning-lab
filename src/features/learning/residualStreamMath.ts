@@ -10,13 +10,13 @@ export type ResidualLayer = {
 };
 
 const candidatePath: ResidualCandidate[][] = [
-  [{ token: 'very', probability: 0.62 }, { token: 'much', probability: 0.12 }, { token: 'well', probability: 0.08 }],
-  [{ token: 'often', probability: 0.26 }, { token: 'very', probability: 0.22 }, { token: 'important', probability: 0.12 }],
-  [{ token: 'important', probability: 0.31 }, { token: 'good', probability: 0.18 }, { token: 'often', probability: 0.14 }],
-  [{ token: 'important', probability: 0.43 }, { token: 'high', probability: 0.19 }, { token: 'questionable', probability: 0.09 }],
-  [{ token: 'high', probability: 0.38 }, { token: 'important', probability: 0.35 }, { token: 'good', probability: 0.11 }],
-  [{ token: 'important', probability: 0.54 }, { token: 'high', probability: 0.21 }, { token: 'questionable', probability: 0.08 }],
-  [{ token: 'important', probability: 0.71 }, { token: 'high', probability: 0.12 }, { token: 'questionable', probability: 0.05 }],
+  [{ token: 'much', probability: 0.34 }, { token: 'tired', probability: 0.18 }, { token: 'late', probability: 0.11 }],
+  [{ token: 'frightened', probability: 0.26 }, { token: 'tired', probability: 0.22 }, { token: 'small', probability: 0.12 }],
+  [{ token: 'tired', probability: 0.31 }, { token: 'frightened', probability: 0.18 }, { token: 'late', probability: 0.14 }],
+  [{ token: 'tired', probability: 0.43 }, { token: 'frightened', probability: 0.19 }, { token: 'dark', probability: 0.09 }],
+  [{ token: 'frightened', probability: 0.38 }, { token: 'tired', probability: 0.35 }, { token: 'small', probability: 0.11 }],
+  [{ token: 'tired', probability: 0.54 }, { token: 'frightened', probability: 0.21 }, { token: 'late', probability: 0.08 }],
+  [{ token: 'tired', probability: 0.71 }, { token: 'frightened', probability: 0.12 }, { token: 'late', probability: 0.05 }],
 ];
 
 function makeVector(layer: number): number[] {
@@ -29,16 +29,16 @@ function makeVector(layer: number): number[] {
 }
 
 const layerCopy = [
-  ['Token embedding', 'Vocabulary lookup', 'The last row still mostly represents the input token “very”.'],
-  ['Block 1', 'Attention adds context', 'The representation begins incorporating “reliability” and “Wikipedia”.'],
+  ['Token embedding', 'Vocabulary lookup', 'The last row still mostly represents the input token “too”.'],
+  ['Block 1', 'Attention adds context', 'The representation begins incorporating “animal” and “street”.'],
   ['Block 2', 'MLP adds features', 'Candidate words move as learned features are added to the stream.'],
-  ['Block 3', 'Attention routes evidence', 'The subject and phrasing increasingly constrain the continuation.'],
+  ['Block 3', 'Attention routes evidence', 'The subject and causal phrasing increasingly constrain the continuation.'],
   ['Block 4', 'MLP reshapes evidence', 'Intermediate probes can wobble; layers do not vote independently.'],
   ['Block 5', 'Late refinement', 'The leading continuation stabilizes as the final state approaches.'],
   ['Final norm', 'Unembedding + softmax', 'The final row is mapped to one score for every vocabulary token.'],
 ] as const;
 
-export const RESIDUAL_PROMPT_TOKENS = ['The', 'reliability', 'of', 'Wikipedia', 'is', 'very'];
+export const RESIDUAL_PROMPT_TOKENS = ['The', 'animal', 'did', 'not', 'cross', 'the', 'street', 'because', 'it', 'was', 'too'];
 
 export const RESIDUAL_LAYERS: ResidualLayer[] = layerCopy.map(([stage, update, interpretation], layer) => ({
   layer,

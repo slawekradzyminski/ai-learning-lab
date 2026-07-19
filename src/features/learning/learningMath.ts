@@ -189,16 +189,16 @@ export function formatBytes(bytes: number): string {
 export type TokenProbability = { token: string; probability: number };
 
 export const STATIC_NEXT_TOKEN_EXAMPLE = {
-  prompt: 'She opened the old wooden door and saw',
+  prompt: 'The animal did not cross the street because it was too',
   source: 'Static teaching dataset',
   modelLabel: 'Illustrative distribution — not live model output',
   tokens: [
-    { token: ' a', probability: 0.34 },
-    { token: ' the', probability: 0.22 },
-    { token: ' nothing', probability: 0.16 },
-    { token: ' her', probability: 0.11 },
-    { token: ' sunlight', probability: 0.09 },
-    { token: '.', probability: 0.08 },
+    { token: ' tired', probability: 0.48 },
+    { token: ' frightened', probability: 0.21 },
+    { token: ' late', probability: 0.14 },
+    { token: ' small', probability: 0.09 },
+    { token: ' dark', probability: 0.05 },
+    { token: '.', probability: 0.03 },
   ] satisfies TokenProbability[],
 };
 

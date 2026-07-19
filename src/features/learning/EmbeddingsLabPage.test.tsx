@@ -16,9 +16,22 @@ describe('EmbeddingsLabPage', () => {
 
     expect(screen.getByTestId('embeddings-track-note')).toHaveTextContent('not an intermediate Bonsai pipeline stage');
     expect(screen.getByTestId('embedding-map')).toBeInTheDocument();
-    expect(screen.getByTestId('embeddings-metadata')).toHaveTextContent('Inspectable 4D vectors');
+    expect(screen.getByTestId('embeddings-metadata')).toHaveTextContent('Inspectable 8D vectors');
     expect(screen.getByTestId('embedding-similarity-matrix')).toBeInTheDocument();
-    expect(screen.getAllByTestId(/^embedding-point-/)).toHaveLength(4);
+    expect(screen.getAllByTestId(/^embedding-point-/)).toHaveLength(8);
+    expect(screen.getByTestId('embedding-space-3d-closed')).toBeInTheDocument();
+    expect(screen.queryByTestId('embedding-space-3d')).not.toBeInTheDocument();
+  });
+
+  test('loads the interactive 3D projection only after the learner opens it', async () => {
+    renderWithProviders(<EmbeddingsLabPage />);
+
+    fireEvent.click(screen.getByTestId('open-embedding-space-3d'));
+
+    expect(await screen.findByTestId('embedding-space-3d')).toBeInTheDocument();
+    expect(screen.getAllByTestId(/^embedding-3d-point-/)).toHaveLength(8);
+    expect(screen.getByTestId('embedding-vector-heatmap')).toHaveTextContent('Vector fingerprint');
+    expect(screen.getByRole('img', { name: /three-dimensional projection/i })).toBeInTheDocument();
   });
 
   test('runs a live embedding request without falling back to guided vectors', async () => {

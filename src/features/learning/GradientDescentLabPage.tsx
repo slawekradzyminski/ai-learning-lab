@@ -183,9 +183,8 @@ export function GradientDescentLabPage() {
 
       <div className="mt-6"><LearningCheckpoint id="gradient-direction" question="The current weight gradient is negative. Which direction should gradient descent move the weight?" choices={[{ value: 'down', label: 'Toward a smaller weight' }, { value: 'up', label: 'Toward a larger weight' }, { value: 'none', label: 'Do not change it' }]} correctValue="up" explanation="The update subtracts the gradient. Subtracting a negative weight gradient increases the weight and moves it toward the optimum at w = 2." /></div>
 
-      <section className="mt-6 grid gap-4 md:grid-cols-2">
-        <Link to="/learn/how-llm-works/slides?slide=35" className="rounded-[2rem] border border-stone-200 bg-white/85 p-5 text-sm font-semibold text-sky-700 hover:bg-stone-50" data-testid="gradient-slides-link">← Return to the instructor deck</Link>
-        <Link to="/learn/backpropagation" className="group flex items-center justify-between rounded-[2rem] bg-slate-950 p-5 text-white" data-testid="gradient-backprop-link"><span><span className="block text-xs uppercase tracking-[0.18em] text-sky-300">Next practical</span><span className="mt-1 block font-semibold">Send the gradient through a network</span></span><ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" /></Link>
+      <section className="mt-6 flex justify-end">
+        <Link to="/learn/backpropagation" className="group flex w-full max-w-xl items-center justify-between rounded-[2rem] bg-slate-950 p-5 text-white" data-testid="gradient-backprop-link"><span><span className="block text-xs uppercase tracking-[0.18em] text-sky-300">Next practical</span><span className="mt-1 block font-semibold">Send the gradient through a network</span></span><ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" /></Link>
       </section>
     </div>
   );

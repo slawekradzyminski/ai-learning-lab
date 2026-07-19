@@ -44,7 +44,7 @@ const VARIANT_COPY = {
   GQA: { title: 'Grouped-query attention', description: 'Groups of query heads share K/V heads.' },
 };
 
-export function KvCacheLabPage() {
+export function KvCacheLabPage({ embedded = false }: { embedded?: boolean }) {
   const [preset, setPreset] = useState('8B-style model');
   const [config, setConfig] = useState<KvCacheConfig>(PRESETS['8B-style model']);
   const error = validateKvCacheConfig(config);
@@ -63,12 +63,12 @@ export function KvCacheLabPage() {
 
   return (
     <div data-testid="kv-cache-lab-page">
-      <LabPageHeader
+      {!embedded ? <LabPageHeader
         eyebrow="Inference systems"
         title="Measure the cost of context"
         description="Every layer stores keys and values for previous tokens. Change the architecture to see why shared KV heads matter."
         aside="Formula-based calculator"
-      />
+      /> : null}
 
       <section className="mb-6 flex flex-col gap-4 rounded-[1.5rem] border border-stone-200 bg-white/82 p-4 sm:flex-row sm:items-center sm:justify-between" data-testid="kv-cache-attention-bridge">
         <div className="flex items-start gap-3">
@@ -202,7 +202,7 @@ export function KvCacheLabPage() {
         </div>
       </section>
 
-      <div className="mt-6">
+      {!embedded ? <div className="mt-6">
         <LearningCheckpoint
           id="kv-cache-reuse"
           question="Why does autoregressive decoding cache earlier keys and values, but not all earlier queries?"
@@ -214,7 +214,7 @@ export function KvCacheLabPage() {
           correctValue="reuse"
           explanation="At the next generation step, the model needs one new query for the newest token and compares it with all earlier keys. Those keys and their value payloads are unchanged, so caching them avoids recomputation."
         />
-      </div>
+      </div> : null}
     </div>
   );
 }

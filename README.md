@@ -1,6 +1,6 @@
 # AI Learning Lab
 
-A standalone, instructor-friendly application for practical AI training. It contains 19 interactive labs, two presentation decks, and researched companion guides covering language models and AI agent systems.
+A standalone, instructor-friendly application for practical AI training. Its canonical ten-lesson LLM course follows one sentence through a transformer, while its canonical eight-lesson AI Agents course follows one bounded research goal through a controlled runtime. Nineteen standalone labs, two presentation decks, and researched companion guides provide additional practice.
 
 See the exact migrated inventory in [`docs/CONTENT_INVENTORY.md`](docs/CONTENT_INVENTORY.md). The application also exposes complete materials indexes at `/learn/how-llm-works/materials` and `/learn/how-ai-agent-works/materials`.
 
@@ -8,10 +8,14 @@ The lab is intentionally independent of the e-commerce demo that originally host
 
 ## Learning design
 
+- **One coherent LLM journey:** ten lessons reuse the sentence `The animal did not cross the street because it was too`, showing how its representation changes from text to tokens, vectors, contextual states, and a next-token distribution.
+- **One coherent agent journey:** eight lessons reuse a laptop-research task, showing how a goal becomes selected context, model proposals, policy decisions, bounded effects, evidence, a verified stop, and repeated evaluation.
+- **One learner flow:** experiment, visible plain-language explanation, misconception, checkpoint, and forward bridge stay in one coherent sequence; notation and annotated sources remain optional.
 - **Practical first:** begin with a user goal, inspect the mechanism, try it, and verify an observable outcome.
 - **Agents without a math tax:** the primary agent course focuses on product decisions, context, boundaries, recovery, and evaluation. Equations are not required to follow the course.
 - **Focused LLM mathematics:** equations remain where they explain a concrete model mechanism such as attention, loss, or gradient flow.
 - **Guided and live modes:** deterministic browser exercises make workshops reliable; selected labs can use Bonsai or another configured model.
+- **Authenticated platform surface:** `/learn/*` uses the existing awesome-localstack local-storage session and login return flow; it does not introduce a second cookie-based auth system.
 - **Source-backed:** theory guides link to primary papers, official Codex and Claude Code documentation, security guidance, and [The Welch Labs Illustrated Guide to AI](https://www.welchlabs.com/).
 
 ## Run locally
@@ -41,7 +45,17 @@ VITE_AI_API_BASE_URL=http://localhost:8080
 VITE_DEFAULT_OLLAMA_MODEL=hf.co/prism-ml/Bonsai-27B-gguf:Q1_0
 ```
 
-When the app is served through the awesome-localstack gateway, leave `VITE_AI_API_BASE_URL` empty. Requests then use the same origin at `/api/v1/ollama/learning/*`. Authentication and public-demo policy belong at the gateway/backend boundary; credentials are never compiled into the browser bundle. Guided modes remain available if live endpoints are unavailable.
+When the app is served through the awesome-localstack gateway, leave `VITE_AI_API_BASE_URL` empty. Requests then use the same origin at `/api/v1/ollama/learning/*`. The Lab validates the platform session through `/api/v1/users/me`; anonymous deep links move to the commerce login with a safe `returnTo`, then return to the original Lab route after sign-in. The existing JWT and refresh-token keys remain in `localStorage`, and credentials are never compiled into the browser bundle. Guided modes remain available if live endpoints are unavailable.
+
+Run the opt-in browser check against a full stack with real Bonsai:
+
+```bash
+E2E_BASE_URL=http://localhost:8081 \
+E2E_REAL_BONSAI=1 \
+npx playwright test e2e/real-bonsai.spec.ts --reporter=list
+```
+
+This covers anonymous routing, login return navigation, offline mock mode, live logprobs, and switching back to offline mode.
 
 ## Docker
 

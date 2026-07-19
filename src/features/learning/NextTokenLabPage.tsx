@@ -16,15 +16,16 @@ import { LearningCheckpoint } from './LearningCheckpoint';
 import { applyTemperature, crossEntropy, decodeToken } from './learningMath';
 import { STATIC_NEXT_TOKEN_RESULT } from './nextTokenProviders';
 import { useLiveNextToken } from './useLiveNextToken';
+import { LLM_COURSE_PROMPT } from './course/courseScenario';
 
 function visibleToken(token: string) {
   return token.startsWith(' ') ? `·${token.slice(1)}` : token;
 }
 
-export function NextTokenLabPage() {
+export function NextTokenLabPage({ embedded = false }: { embedded?: boolean }) {
   const [mode, setMode] = useState<'static' | 'live'>('static');
   const [model, setModel] = useState('llama3.2:1b');
-  const [livePrompt, setLivePrompt] = useState('The capital of France is');
+  const [livePrompt, setLivePrompt] = useState(LLM_COURSE_PROMPT);
   const [topK, setTopK] = useState(10);
   const [temperature, setTemperature] = useState(1);
   const [strategy, setStrategy] = useState<'greedy' | 'sample'>('greedy');
@@ -59,12 +60,12 @@ export function NextTokenLabPage() {
 
   return (
     <div data-testid="next-token-lab-page">
-      <LabPageHeader
+      {!embedded ? <LabPageHeader
         eyebrow="Language models"
         title="Choose the next token"
         description="Compare a deterministic lesson distribution with a real one-token Ollama run, then reshape the visible candidates with temperature."
         aside={mode === 'static' ? 'Offline lesson mode' : 'Live model mode'}
-      />
+      /> : null}
 
       <div className="mb-6 grid grid-cols-2 gap-2 rounded-[1.35rem] border border-stone-200 bg-white/80 p-2" aria-label="Probability source">
         {([
@@ -317,7 +318,7 @@ export function NextTokenLabPage() {
         </>
       )}
 
-      <div className="mt-6">
+      {!embedded ? <div className="mt-6">
         <LearningCheckpoint
           id="next-token-loss"
           question="If the model assigns a lower probability to the correct next token, what happens to cross-entropy loss?"
@@ -329,7 +330,7 @@ export function NextTokenLabPage() {
           correctValue="increases"
           explanation="Cross-entropy is −ln(pcorrect). As the correct-token probability approaches zero, the negative logarithm becomes much larger and creates a stronger training penalty."
         />
-      </div>
+      </div> : null}
     </div>
   );
 }

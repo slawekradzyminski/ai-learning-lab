@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderWithProviders } from '../../test/test-utils';
 import { ollama } from '../../lib/api';
 import { NextTokenLabPage } from './NextTokenLabPage';
+import { LLM_COURSE_PROMPT } from './course/courseScenario';
 
 vi.mock('../../lib/api', () => ({
   ollama: { getLearningNextToken: vi.fn() },
@@ -16,7 +17,7 @@ describe('NextTokenLabPage', () => {
 
     expect(screen.getByTestId('next-token-static-notice')).toHaveTextContent('not live model output');
     expect(screen.getAllByText('Static teaching dataset').length).toBeGreaterThan(0);
-    expect(screen.getByTestId('next-token-result')).toHaveTextContent('·a');
+    expect(screen.getByTestId('next-token-result')).toHaveTextContent('·tired');
     expect(screen.getByTestId('next-token-attention-link')).toHaveAttribute('href', '/learn/attention');
 
     fireEvent.click(screen.getByLabelText('Sample'));
@@ -35,7 +36,7 @@ describe('NextTokenLabPage', () => {
     vi.mocked(ollama.getLearningNextToken).mockResolvedValue({
       source: 'ollama-live',
       modelLabel: 'llama3.2:1b',
-      prompt: 'The capital of France is',
+      prompt: LLM_COURSE_PROMPT,
       generatedToken: ' Paris',
       capturedProbabilityMass: 0.86,
       truncated: true,
@@ -53,7 +54,7 @@ describe('NextTokenLabPage', () => {
     await waitFor(() => expect(screen.getByTestId('next-token-captured-mass')).toHaveTextContent('86.0% captured mass'));
     expect(ollama.getLearningNextToken).toHaveBeenCalledWith({
       model: 'llama3.2:1b',
-      prompt: 'The capital of France is',
+      prompt: LLM_COURSE_PROMPT,
       topK: 7,
     });
     expect(screen.getByText('Live Ollama logprobs')).toBeInTheDocument();

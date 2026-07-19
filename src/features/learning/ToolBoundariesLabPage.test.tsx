@@ -18,6 +18,6 @@ describe('ToolBoundariesLabPage', () => {
     renderWithProviders(<ToolBoundariesLabPage />);
     fireEvent.click(screen.getByTestId('tool-call-3'));
     expect(screen.getByTestId('tool-decision')).toHaveTextContent('Invalid tool arguments');
-    expect(screen.getByTestId('tool-decision')).toHaveTextContent('missing to');
+    expect(screen.getByTestId('tool-decision')).toHaveTextContent('missing path');
   });
 });

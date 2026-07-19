@@ -14,6 +14,7 @@
     "fetch:bonsai-tokenizer": "node fetch-bonsai-tokenizer.mjs"
   },
   "dependencies": {
+    "@awesome-testing/platform-client": "file:vendor/awesome-testing-platform-client-0.1.3.tgz",
     "@huggingface/tokenizers": "^0.1.3",
     "@radix-ui/react-slot": "^1.2.4",
     "axios": "^1.16.1",
