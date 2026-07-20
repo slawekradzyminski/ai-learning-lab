@@ -1,18 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, RotateCcw } from 'lucide-react';
-import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { LessonPresentation } from '../teachingMoments/LessonPresentation';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { clearCourseProgress, completeLesson, readCompletedLessons } from './courseProgress';
 import { CoursePipeline } from './CoursePipeline';
 import { CourseLearnView } from './CourseLessonViews';
 import { LLM_COURSE_PROMPT, LLM_COURSE_TARGET } from './courseScenario';
 import { LLM_COURSE_LESSONS, getLlmCourseLesson, getLlmCourseRoute, type LlmCourseLessonId } from './llmCourseCatalog';
-import { LLM_LESSON_MOMENTS } from './content/llmLessonMoments';
 
 export function LlmCoursePage() {
   const { lessonId } = useParams();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const lesson = getLlmCourseLesson(lessonId);
   const [completedIds, setCompletedIds] = useState<LlmCourseLessonId[]>(readCompletedLessons);
 
@@ -30,19 +27,6 @@ export function LlmCoursePage() {
   }, [lesson?.id, location.hash]);
 
   if (!lesson) return <Navigate to={getLlmCourseRoute(LLM_COURSE_LESSONS[0].id)} replace />;
-
-  if (searchParams.get('view') === 'present') {
-    return (
-      <LessonPresentation
-        curriculumLabel="How LLMs work"
-        lessons={LLM_COURSE_LESSONS}
-        lesson={lesson}
-        momentsByLesson={LLM_LESSON_MOMENTS}
-        getRoute={(id) => getLlmCourseRoute(id as LlmCourseLessonId)}
-        accent="sky"
-      />
-    );
-  }
 
   const markComplete = () => setCompletedIds(completeLesson(lesson.id));
 

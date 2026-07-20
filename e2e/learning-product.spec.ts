@@ -138,22 +138,17 @@ test('complete materials indexes expose every lab and integrated lesson handoff'
   await expect(page.getByTestId('materials-lab-agent-evals').getByText('Integrated lesson', { exact: true })).toBeVisible();
 });
 
-test('legacy presentation and guide links resolve into lesson-owned moments', async ({ page }) => {
+test('retired presentation and guide routes return to the learning home', async ({ page }) => {
   await page.goto('/learn/how-llm-works/slides?slide=53');
-  await expect(page).toHaveURL(/\/learn\/how-llm-works\/course\/capstone\?view=present&moment=capstone\/debrief$/);
-  await expect(page.getByTestId('lesson-presentation')).toBeVisible();
-  await expect(page.getByTestId('teaching-moment-capstone/debrief')).toBeVisible();
+  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page.getByTestId('learning-home-title')).toBeVisible();
 
   await page.goto('/learn/how-ai-agent-works/slides?slide=33');
-  await expect(page).toHaveURL(/\/learn\/how-ai-agent-works\/course\/capstone\?view=present&moment=capstone\/debrief$/);
-  await expect(page.getByTestId('teaching-moment-capstone/debrief')).toBeVisible();
+  await expect(page).toHaveURL(/\/learn$/);
 
   await page.goto('/learn/how-llm-works/guide?slide=1');
-  await expect(page).toHaveURL(/\/learn\/how-llm-works\/course\/prediction-goal\?view=present&moment=prediction-goal\/hook&notes=1$/);
-  await expect(page.getByTestId('presentation-notes')).toContainText('Presenter cue');
+  await expect(page).toHaveURL(/\/learn$/);
 
   await page.goto('/learn/how-ai-agent-works/guide?slide=26');
-  await expect(page).toHaveURL(/\/learn\/how-ai-agent-works\/course\/tool-boundaries\?view=present&moment=tool-boundaries\/mechanism&notes=1$/);
-  await expect(page.getByTestId('teaching-moment-tool-boundaries/mechanism')).toBeVisible();
-  await expect(page.getByTestId('presentation-notes')).toContainText('Presenter cue');
+  await expect(page).toHaveURL(/\/learn$/);
 });

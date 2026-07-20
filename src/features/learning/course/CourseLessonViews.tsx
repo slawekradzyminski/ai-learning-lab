@@ -1,10 +1,7 @@
 import { BookOpen, FlaskConical } from 'lucide-react';
 import { LearningCheckpoint } from '../LearningCheckpoint';
-import { LessonVisualIntroduction } from '../teachingMoments/TeachingMomentCanvas';
 import { CourseLessonActivity } from './CourseLessonActivity';
 import { CourseLessonNotes } from './CourseLessonNotes';
-import { LLM_LESSON_MOMENTS } from './content/llmLessonMoments';
-import { getLlmCourseRoute } from './llmCourseCatalog';
 import type { LlmCourseLesson } from './llmCourseCatalog';
 
 function RepresentationContract({ lesson }: { lesson: LlmCourseLesson }) {
@@ -20,16 +17,13 @@ function RepresentationContract({ lesson }: { lesson: LlmCourseLesson }) {
 }
 
 export function CourseLearnView({ lesson, onComplete }: { lesson: LlmCourseLesson; onComplete: () => void }) {
-  const teachingMoments = LLM_LESSON_MOMENTS[lesson.id];
   return (
     <div className="space-y-10 learning-enter" data-testid="course-view-learn">
       <RepresentationContract lesson={lesson} />
       <nav className="flex flex-wrap items-center gap-x-7 gap-y-3 border-b border-stone-200 pb-5 text-xs font-semibold" aria-label="Lesson materials">
-        <a href={`#lesson-visual-introduction-${lesson.id}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-700">Visual introduction</a>
         <a href="#lesson-experiment" className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-700"><FlaskConical className="h-3.5 w-3.5" /> Experiment</a>
         <a href="#lesson-theory" className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-700"><BookOpen className="h-3.5 w-3.5" /> Complete theory</a>
       </nav>
-      <LessonVisualIntroduction lesson={teachingMoments} accent="sky" courseRoute={getLlmCourseRoute(lesson.id)} experimentId="lesson-experiment" />
       <div id="lesson-experiment" className="scroll-mt-20"><CourseLessonActivity lesson={lesson} /></div>
       <div id="lesson-theory" className="scroll-mt-20"><CourseLessonNotes lesson={lesson} /></div>
       <LearningCheckpoint id={`course-${lesson.id}`} eyebrow="Check your understanding" {...lesson.checkpoint} onCorrect={onComplete} compact />

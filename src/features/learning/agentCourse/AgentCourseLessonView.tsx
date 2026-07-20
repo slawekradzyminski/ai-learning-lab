@@ -1,14 +1,10 @@
 import { BookOpen, FlaskConical } from 'lucide-react';
 import { LearningCheckpoint } from '../LearningCheckpoint';
-import { LessonVisualIntroduction } from '../teachingMoments/TeachingMomentCanvas';
 import type { AgentCourseLesson } from './agentCourseCatalog';
 import { AgentCourseActivity } from './AgentCourseActivity';
 import { AgentCourseLessonNotes } from './AgentCourseLessonNotes';
-import { AGENT_LESSON_MOMENTS } from './content/agentLessonMoments';
-import { getAgentCourseRoute } from './agentCourseCatalog';
 
 export function AgentCourseLessonView({ lesson, onComplete }: { lesson: AgentCourseLesson; onComplete: () => void }) {
-  const teachingMoments = AGENT_LESSON_MOMENTS[lesson.id];
   return (
     <div className="space-y-10 learning-enter" data-testid="agent-course-lesson-view">
       <div className="grid gap-4 border-b border-stone-300 pb-6 text-sm md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-center" data-testid="agent-course-representation-contract">
@@ -20,12 +16,10 @@ export function AgentCourseLessonView({ lesson, onComplete }: { lesson: AgentCou
       </div>
 
       <nav className="flex flex-wrap items-center gap-x-7 gap-y-3 border-b border-stone-200 pb-5 text-xs font-semibold" aria-label="Lesson materials">
-        <a href={`#lesson-visual-introduction-${lesson.id}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700">Visual introduction</a>
         <a href="#agent-lesson-experiment" className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700"><FlaskConical className="h-3.5 w-3.5" /> Experiment</a>
         <a href="#agent-lesson-theory" className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700"><BookOpen className="h-3.5 w-3.5" /> Complete theory</a>
       </nav>
 
-      <LessonVisualIntroduction lesson={teachingMoments} accent="amber" courseRoute={getAgentCourseRoute(lesson.id)} experimentId="agent-lesson-experiment" />
       <div id="agent-lesson-experiment" className="scroll-mt-20"><AgentCourseActivity lesson={lesson} /></div>
       <div id="agent-lesson-theory" className="scroll-mt-20"><AgentCourseLessonNotes lesson={lesson} /></div>
       <LearningCheckpoint id={`agent-course-${lesson.id}`} eyebrow="Check your understanding" {...lesson.checkpoint} onCorrect={onComplete} compact />

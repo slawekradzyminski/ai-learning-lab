@@ -1,18 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, RotateCcw } from 'lucide-react';
-import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { LessonPresentation } from '../teachingMoments/LessonPresentation';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { AGENT_COURSE_LESSONS, getAgentCourseLesson, getAgentCourseRoute, type AgentCourseLessonId } from './agentCourseCatalog';
 import { AgentCourseLessonView } from './AgentCourseLessonView';
 import { AgentCoursePipeline } from './AgentCoursePipeline';
 import { clearAgentCourseProgress, completeAgentLesson, readCompletedAgentLessons } from './agentCourseProgress';
 import { AGENT_COURSE_SCENARIO } from './content/agentCourseBible';
-import { AGENT_LESSON_MOMENTS } from './content/agentLessonMoments';
 
 export function AgentCoursePage() {
   const { lessonId } = useParams();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const lesson = getAgentCourseLesson(lessonId);
   const [completedIds, setCompletedIds] = useState<AgentCourseLessonId[]>(readCompletedAgentLessons);
   const lessonTitleRef = useRef<HTMLHeadingElement>(null);
@@ -32,19 +29,6 @@ export function AgentCoursePage() {
   }, [lesson?.id, location.hash]);
 
   if (!lesson) return <Navigate to={getAgentCourseRoute(AGENT_COURSE_LESSONS[0].id)} replace />;
-
-  if (searchParams.get('view') === 'present') {
-    return (
-      <LessonPresentation
-        curriculumLabel="How AI agents work"
-        lessons={AGENT_COURSE_LESSONS}
-        lesson={lesson}
-        momentsByLesson={AGENT_LESSON_MOMENTS}
-        getRoute={(id) => getAgentCourseRoute(id as AgentCourseLessonId)}
-        accent="amber"
-      />
-    );
-  }
 
   return (
     <div className="space-y-8 pb-10" data-testid="agent-course-page">
