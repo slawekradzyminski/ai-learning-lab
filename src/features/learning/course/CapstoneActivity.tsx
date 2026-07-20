@@ -15,6 +15,7 @@ export function CapstoneActivity() {
     <section className="overflow-hidden rounded-[2rem] bg-slate-950 text-white" data-testid="capstone-activity">
       <div className="border-b border-white/10 p-5 md:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-300">Intervention</p>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">For every row, name whether your evidence comes from a hand calculation, the GPT-2 course trace, or a local Bonsai comparison.</p>
         <div className="mt-4 flex flex-wrap items-center gap-3 font-mono text-lg">
           <span>The</span>
           <select value={subject} onChange={(event) => setSubject(event.target.value as typeof subject)} className="h-11 rounded-xl border border-sky-400 bg-slate-900 px-3 text-sky-200" data-testid="capstone-subject"><option value="animal">animal</option><option value="robot">robot</option><option value="child">child</option></select>

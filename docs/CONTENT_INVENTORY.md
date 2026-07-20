@@ -1,6 +1,6 @@
 # AI Learning Lab content inventory
 
-This document is the explicit extraction contract for the standalone application. The `/learn/` home page links to a complete materials index for each course, while each canonical lesson owns its experiment, long-form theory, practice, assessment, and forward bridge. Slides, visual-introduction moments, presenter notes, and presentation routes are intentionally not part of the product.
+This document is the explicit extraction contract for the standalone application. The `/learn/` home page links to a complete materials index for each course, while each canonical lesson owns its concise mechanism, experiment, assessment, optional long-form reference chapter, and forward bridge. Slides, visual-introduction moments, presenter notes, and presentation routes are intentionally not part of the product.
 
 ## Canonical LLM learner path
 
@@ -17,7 +17,9 @@ This document is the explicit extraction contract for the standalone application
 9. Learning
 10. Capstone reconstruction
 
-Each lesson is one learner flow: question, representation change, experiment, plain-language explanation, misconception correction, checkpoint, and forward bridge. Optional notation and annotated sources stay behind quiet disclosures. Browser-local completion state records progress. The deterministic glass-box lane and live Bonsai evidence remain explicitly distinguished inside the relevant explanations.
+Each lesson follows one mandatory spine: read the smallest useful mechanism, run the experiment, answer the checkpoint, and continue. The full chapter appears afterward as a collapsed “Deep dive / reference chapter” and loads only on demand. Browser-local state records course completion.
+
+LLM experiments name their evidence lane at the experiment boundary. “Calculate by hand” identifies small internally consistent teaching data. “GPT-2 course trace” identifies real inspector data available in the full-local runtime. “Compare with local AI” identifies Bonsai/Ollama behavior and never implies access to hidden model activations. The prediction-goal experiment exposes these lanes directly: the stable teaching distribution, real GPT-2 vocabulary logits, or live Bonsai logprobs for the same prompt. Ollama logprobs are never labelled as raw Bonsai logits. The training target `tired` remains hidden in the lesson header until the language-model-head lesson, where it is explicitly labelled as the revealed training target.
 
 The existing 19 labs remain directly addressable as the deeper exercise library. Semantic retrieval and neural-learning/vision remain optional branches rather than interruptions in the core transformer story.
 
@@ -34,7 +36,7 @@ The existing 19 labs remain directly addressable as the deeper exercise library.
 7. Agent evaluations
 8. Complete-system capstone
 
-Every lesson reuses the goal to research three laptops under €900 and write `laptop-comparison.md` without purchasing or contacting a vendor. The recurring scenario makes ownership visible: the model proposes, the harness selects context and mediates effects, tools interact with the environment, and evaluators inspect both the trace and terminal state. Each lesson combines its existing browser lab, a long-form chapter, diagrams, misconception clinic, exercises, glossary, checkpoint, and explicit forward bridge. Browser-local progress is independent from the LLM course.
+Every lesson reuses the goal to research three laptops under €900 and write `laptop-comparison.md` without purchasing or contacting a vendor. The recurring scenario makes ownership visible: the model proposes, the harness selects context and mediates effects, tools interact with the environment, and evaluators inspect both the trace and terminal state. Each lesson uses the same mechanism → deterministic browser experiment → checkpoint spine. The long-form chapter, diagrams, misconception clinic, exercises, glossary, and sources remain available afterward as optional reference. Browser-local progress is independent from the LLM course.
 
 ## Inventory summary
 
@@ -43,10 +45,10 @@ Every lesson reuses the goal to research three laptops under €900 and write `l
 | Interactive labs | 12 | 7 | 19 |
 | Canonical long-form chapters | 10 | 8 | 18 |
 | Canonical guided experiments | 10 | 8 | 18 |
-| Learning feature test files |  |  | 51 |
+| Learning feature test files |  |  | 52 |
 | Pinned Bonsai tokenizer files |  |  | 4 |
 
-The earlier extracted curriculum contained detached presentation frames and independently generated guide sections. Those parallel surfaces, their later lesson-owned visual introductions, presenter metadata, and all presentation routes have been retired. The maintained learner contract is the lesson itself: experiment, theory, practice, checkpoint, and continuation. Structural quality gates cover every canonical long-form chapter.
+The earlier extracted curriculum contained detached presentation frames and independently generated guide sections. Those parallel surfaces, their later lesson-owned visual introductions, presenter metadata, and all presentation routes have been retired. The maintained learner contract is the paced lesson spine plus an optional reference chapter. Structural quality gates cover every canonical long-form chapter and verify the learner-facing sequence.
 
 ## LLM course
 

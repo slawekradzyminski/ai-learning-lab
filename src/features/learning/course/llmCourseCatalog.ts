@@ -1,5 +1,6 @@
 import type { LearningLabId } from '../learningCatalog';
 import { LESSON_THEORY, type CourseTheory } from './content/lessonTheory';
+import type { ExperimentEvidence } from './LessonSpine';
 
 export type LlmCourseLessonId =
   | 'prediction-goal'
@@ -18,6 +19,49 @@ export type CourseCheckpoint = {
   choices: Array<{ value: string; label: string }>;
   correctValue: string;
   explanation: string;
+};
+
+export const LLM_COURSE_EVIDENCE: Record<LlmCourseLessonId, ExperimentEvidence> = {
+  'prediction-goal': {
+    label: 'Choose an evidence lane · teaching, GPT-2, or local AI',
+    detail: 'The offline distribution stays stable for comparison. Full-local mode can instead run a real GPT-2 forward pass or request Bonsai logprobs through Ollama.',
+  },
+  tokenization: {
+    label: 'Calculate by hand · compare with local AI',
+    detail: 'Guided rules are illustrative. The optional pinned Qwen3.6 tokenizer is the vocabulary used by Bonsai; it is not the GPT-2 course trace.',
+  },
+  'token-embeddings': {
+    label: 'Calculate by hand · optional GPT-2 course trace',
+    detail: 'Tiny vectors make lookup arithmetic exact. Full-local mode can separately inspect real GPT-2 input embeddings.',
+  },
+  'transformer-block': {
+    label: 'Calculate by hand · tiny transformer block',
+    detail: 'Every displayed update is internally consistent teaching data, chosen so the residual and MLP operations remain inspectable.',
+  },
+  attention: {
+    label: 'Calculate by hand · optional GPT-2 course trace',
+    detail: 'The default 2D head is an exact small calculation. Full-local mode can switch to real GPT-2 attention without claiming Bonsai internals.',
+  },
+  'residual-stream': {
+    label: 'Calculate by hand · optional GPT-2 course trace',
+    detail: 'The walkthrough is illustrative and internally consistent. Full-local mode can inspect real GPT-2 hidden states and logits.',
+  },
+  'language-model-head': {
+    label: 'Calculate by hand · compare with local AI',
+    detail: 'Offline logits are curated teaching data. When enabled, the live lane queries Bonsai through Ollama as a separate comparison.',
+  },
+  'generation-cache': {
+    label: 'Calculate by hand · architecture calculator',
+    detail: 'Cache shapes and byte counts are calculated from declared architecture parameters; no hidden runtime tensors are invented.',
+  },
+  learning: {
+    label: 'Calculate by hand · exact loss step',
+    detail: 'The probability, cross-entropy, gradient direction, and update are a small transparent training example rather than a captured model update.',
+  },
+  capstone: {
+    label: 'Learner trace · evidence ledger',
+    detail: 'Reconstruct the pass from the predictions and observations saved in earlier lessons; distinguish teaching data, GPT-2, and local-AI comparisons.',
+  },
 };
 
 export type LlmCourseLesson = {

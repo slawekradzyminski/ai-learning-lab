@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { LEARNING_LABS } from './learningCatalog';
 import { AGENT_COURSE_LESSONS } from './agentCourse/agentCourseCatalog';
 import { AGENT_CHAPTER_LOADERS } from './agentCourse/content/chapterLoaders';
-import { LLM_COURSE_LESSONS } from './course/llmCourseCatalog';
+import { LLM_COURSE_EVIDENCE, LLM_COURSE_LESSONS } from './course/llmCourseCatalog';
 import { COURSE_CHAPTER_LOADERS } from './course/content/chapterLoaders';
 
 describe('standalone content inventory', () => {
@@ -18,6 +18,7 @@ describe('standalone content inventory', () => {
 
     for (const lesson of LLM_COURSE_LESSONS) {
       expect((await COURSE_CHAPTER_LOADERS[lesson.id]()).sections.length, `${lesson.id} theory sections`).toBeGreaterThan(0);
+      expect(LLM_COURSE_EVIDENCE[lesson.id].label, `${lesson.id} evidence lane`).toBeTruthy();
     }
     for (const lesson of AGENT_COURSE_LESSONS) {
       expect((await AGENT_CHAPTER_LOADERS[lesson.id]()).sections.length, `${lesson.id} theory sections`).toBeGreaterThan(0);

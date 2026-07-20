@@ -35,7 +35,7 @@ export function LearningCheckpoint({
   };
 
   return (
-    <section className={compact ? 'border-y border-stone-300' : 'overflow-hidden rounded-[2rem] border border-stone-200 bg-white/85'} data-testid={`${id}-checkpoint`}>
+    <section className={compact ? 'border-t border-stone-300' : 'overflow-hidden rounded-[2rem] border border-stone-200 bg-white/85'} data-testid={`${id}-checkpoint`}>
       <div className={`grid gap-6 md:grid-cols-[minmax(0,0.82fr)_minmax(320px,1.18fr)] ${compact ? 'py-8' : 'p-5 md:p-7'}`}>
         <div>
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">

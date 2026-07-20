@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, RotateCcw } from 'lucide-react';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { clearCourseProgress, completeLesson, readCompletedLessons } from './courseProgress';
-import { CoursePipeline } from './CoursePipeline';
+import { CourseLessonMenu } from './CourseLessonMenu';
 import { CourseLearnView } from './CourseLessonViews';
 import { LLM_COURSE_PROMPT, LLM_COURSE_TARGET } from './courseScenario';
 import { LLM_COURSE_LESSONS, getLlmCourseLesson, getLlmCourseRoute, type LlmCourseLessonId } from './llmCourseCatalog';
@@ -17,6 +17,7 @@ export function LlmCoursePage() {
   const currentIndex = lesson ? LLM_COURSE_LESSONS.findIndex(({ id }) => id === lesson.id) : -1;
   const previous = currentIndex > 0 ? LLM_COURSE_LESSONS[currentIndex - 1] : undefined;
   const next = currentIndex >= 0 ? LLM_COURSE_LESSONS[currentIndex + 1] : undefined;
+  const targetRevealed = currentIndex >= LLM_COURSE_LESSONS.findIndex(({ id }) => id === 'language-model-head');
 
   useEffect(() => {
     if (location.hash) {
@@ -35,14 +36,16 @@ export function LlmCoursePage() {
       <header className="learning-enter border-b border-stone-300 pb-10 pt-2">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link to="/learn" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-950"><ArrowLeft className="h-3.5 w-3.5" /> AI Learning Lab</Link>
-          <p className="text-xs font-semibold text-slate-500" data-testid="course-progress"><span className="font-mono text-sky-700">{completed.size}/{LLM_COURSE_LESSONS.length}</span> complete</p>
+          <CourseLessonMenu lesson={lesson} completed={completed} />
         </div>
         <p className="mt-12 text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Lesson {String(currentIndex + 1).padStart(2, '0')} · {lesson.shortTitle}</p>
         <h1 className="mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-[-0.035em] text-slate-950 md:text-6xl" data-testid="course-lesson-title">{lesson.question}</h1>
-        <p className="mt-8 max-w-3xl border-l border-stone-300 pl-5 font-mono text-sm leading-7 text-slate-500">{LLM_COURSE_PROMPT}<span className="text-sky-700">{currentIndex === 0 ? ' …' : LLM_COURSE_TARGET}</span></p>
+        <div className="mt-8 max-w-3xl border-l border-stone-300 pl-5" data-testid="course-scenario">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-slate-400">{targetRevealed ? 'Training target revealed' : 'Unfinished prompt'}</p>
+          <p className="mt-2 font-mono text-sm leading-7 text-slate-500">{LLM_COURSE_PROMPT}<span className="text-sky-700">{targetRevealed ? LLM_COURSE_TARGET : ' …'}</span></p>
+        </div>
       </header>
 
-      <CoursePipeline lesson={lesson} completed={completed} />
       <CourseLearnView lesson={lesson} onComplete={markComplete} />
 
       <footer className="border-t border-stone-300 pt-8">

@@ -26,7 +26,7 @@ export function CourseMaterialsPage({ curriculum }: { curriculum: Curriculum }) 
       <header className="border-b border-stone-300 pb-8">
         <Badge variant="outline" tone="tracking">One integrated curriculum</Badge>
         <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-slate-950 md:text-6xl">{curriculum === 'agent' ? 'AI agent course materials' : 'LLM course materials'}</h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">Every lesson keeps its guided experiment, complete theory chapter, practice, and checkpoint in one continuous route.</p>
+        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">Every lesson moves through a concise mechanism, experiment, and checkpoint. The complete theory chapter remains available afterward as optional reference.</p>
 
         <div className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-stone-200 bg-stone-200 sm:grid-cols-3">
           {[
@@ -46,7 +46,7 @@ export function CourseMaterialsPage({ curriculum }: { curriculum: Curriculum }) 
           <div className={`border-l-4 pl-4 ${accent === 'amber' ? 'border-amber-500' : 'border-sky-500'}`}>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Canonical learner path</p>
             <h2 className="mt-2 text-2xl font-semibold text-slate-950">Course chapters</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Each route moves directly through the experiment, complete theory chapter, practice, and checkpoint.</p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Each route keeps the mandatory learning loop concise and loads the long-form chapter only when the learner opens the deep dive.</p>
           </div>
           <ol className="mt-5 divide-y divide-stone-200 border-y border-stone-200">
             {canonicalLessons.map((lesson, index) => (
