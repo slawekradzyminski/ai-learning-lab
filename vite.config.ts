@@ -21,7 +21,6 @@ export default defineConfig({
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
           if (/node_modules\/(react|react-dom|react-router-dom)\//.test(id)) return 'react';
-          if (id.includes('node_modules/mermaid/')) return 'diagrams';
           if (id.includes('node_modules/@huggingface/tokenizers/')) return 'tokenizer';
           if (/node_modules\/(katex|react-markdown|remark-|rehype-)/.test(id)) return 'theory';
         },

@@ -1,34 +1,29 @@
-import { BookOpen, FlaskConical } from 'lucide-react';
+import { BookOpen, CircleHelp, FlaskConical, Lightbulb } from 'lucide-react';
 import { LearningCheckpoint } from '../LearningCheckpoint';
-import { LessonVisualIntroduction } from '../teachingMoments/TeachingMomentCanvas';
+import { ExperimentHeading, MechanismBrief } from '../course/LessonSpine';
 import type { AgentCourseLesson } from './agentCourseCatalog';
 import { AgentCourseActivity } from './AgentCourseActivity';
 import { AgentCourseLessonNotes } from './AgentCourseLessonNotes';
-import { AGENT_LESSON_MOMENTS } from './content/agentLessonMoments';
-import { getAgentCourseRoute } from './agentCourseCatalog';
 
 export function AgentCourseLessonView({ lesson, onComplete }: { lesson: AgentCourseLesson; onComplete: () => void }) {
-  const teachingMoments = AGENT_LESSON_MOMENTS[lesson.id];
   return (
     <div className="space-y-10 learning-enter" data-testid="agent-course-lesson-view">
-      <div className="grid gap-4 border-b border-stone-300 pb-6 text-sm md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-center" data-testid="agent-course-representation-contract">
-        <div><p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-slate-400">Available now</p><p className="mt-2 font-semibold text-slate-950">{lesson.inputRepresentation}</p></div>
-        <span className="hidden text-slate-300 md:block">→</span>
-        <div><p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-amber-700">Controlled transition</p><p className="mt-2 font-semibold text-slate-950">{lesson.operation}</p></div>
-        <span className="hidden text-slate-300 md:block">→</span>
-        <div><p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-slate-400">Evidence afterward</p><p className="mt-2 font-semibold text-slate-950">{lesson.outputRepresentation}</p></div>
-      </div>
-
       <nav className="flex flex-wrap items-center gap-x-7 gap-y-3 border-b border-stone-200 pb-5 text-xs font-semibold" aria-label="Lesson materials">
-        <a href={`#lesson-visual-introduction-${lesson.id}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700">Visual introduction</a>
-        <a href="#agent-lesson-experiment" className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700"><FlaskConical className="h-3.5 w-3.5" /> Experiment</a>
-        <a href="#agent-lesson-theory" className="inline-flex items-center gap-2 text-slate-600 hover:text-amber-700"><BookOpen className="h-3.5 w-3.5" /> Complete theory</a>
+        <a href="#agent-lesson-intro" className="inline-flex items-center gap-2 text-slate-600 transition hover:text-amber-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-600"><Lightbulb className="h-3.5 w-3.5" /> Intro</a>
+        <a href="#agent-lesson-experiment" className="inline-flex items-center gap-2 text-slate-600 transition hover:text-amber-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-600"><FlaskConical className="h-3.5 w-3.5" /> Experiment</a>
+        <a href="#agent-lesson-question" className="inline-flex items-center gap-2 text-slate-600 transition hover:text-amber-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-600"><CircleHelp className="h-3.5 w-3.5" /> Question</a>
+        <a href="#agent-lesson-theory" className="inline-flex items-center gap-2 text-slate-600 transition hover:text-amber-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-600"><BookOpen className="h-3.5 w-3.5" /> Deep dive</a>
       </nav>
 
-      <LessonVisualIntroduction lesson={teachingMoments} accent="amber" courseRoute={getAgentCourseRoute(lesson.id)} experimentId="agent-lesson-experiment" />
-      <div id="agent-lesson-experiment" className="scroll-mt-20"><AgentCourseActivity lesson={lesson} /></div>
+      <div className="space-y-10" data-testid="agent-mandatory-lesson-spine">
+        <div id="agent-lesson-intro" className="scroll-mt-20"><MechanismBrief content={lesson.educational} accent="amber" /></div>
+        <div id="agent-lesson-experiment" className="scroll-mt-20 space-y-6">
+          <ExperimentHeading evidence={{ label: 'Deterministic browser simulation', detail: `The ${lesson.shortTitle.toLowerCase()} experiment uses inspectable, repeatable teaching data. It does not claim to be a live agent trajectory.` }} accent="amber" />
+          <AgentCourseActivity lesson={lesson} />
+        </div>
+        <div id="agent-lesson-question" className="scroll-mt-20"><LearningCheckpoint id={`agent-course-${lesson.id}`} eyebrow="03 · Check your understanding" {...lesson.checkpoint} onCorrect={onComplete} compact /></div>
+      </div>
       <div id="agent-lesson-theory" className="scroll-mt-20"><AgentCourseLessonNotes lesson={lesson} /></div>
-      <LearningCheckpoint id={`agent-course-${lesson.id}`} eyebrow="Check your understanding" {...lesson.checkpoint} onCorrect={onComplete} compact />
       <p className="border-l-2 border-amber-500 pl-5 text-sm leading-7 text-slate-600" data-testid="agent-course-forward-bridge"><span className="font-semibold text-slate-900">Next:</span> {lesson.bridgeForward}</p>
     </div>
   );

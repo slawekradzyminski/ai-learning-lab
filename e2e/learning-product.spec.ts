@@ -10,6 +10,20 @@ test.beforeEach(async ({ page }) => {
     contentType: 'application/json',
     body: JSON.stringify({ username: 'e2e-user', roles: ['ROLE_CLIENT'] }),
   }));
+  await page.route('**/api/v1/learning/gpt2/status', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({
+      available: process.env.E2E_EXPECT_LIVE_RUNTIME === '1',
+      mode: 'full-local',
+      message: 'E2E capability fixture',
+      modelLabel: 'openai-community/gpt2',
+      modelRevision: '607a30d7',
+      layerCount: 12,
+      headCount: 12,
+      maxTokens: 32,
+    }),
+  }));
 });
 
 const labRoutes = [
@@ -42,10 +56,21 @@ test('canonical AI Agents course keeps the runtime experiment, chapter, and chec
   await page.goto('/learn/how-ai-agent-works/course/agent-loop');
 
   await expect(page.getByTestId('agent-course-page')).toBeVisible();
-  await expect(page.getByTestId('agent-course-pipeline')).toBeVisible();
+  await expect(page.getByTestId('agent-course-lesson-menu')).toBeVisible();
+  await expect(page.getByTestId('agent-course-pipeline')).toHaveCount(0);
+  await page.getByTestId('agent-course-lesson-menu').locator('summary').click();
+  await expect(page.getByTestId('agent-course-lesson-menu')).toHaveAttribute('open', '');
+  await expect(page.getByTestId('agent-course-lesson-menu').getByRole('link')).toHaveCount(8);
+  await page.getByTestId('agent-course-lesson-menu').locator('summary').click();
+  await expect(page.getByTestId('agent-course-representation-contract')).toHaveCount(0);
   await expect(page.getByTestId('agent-course-lesson-title')).toContainText('LLM response become an agent run');
+  await expect(page.getByRole('navigation', { name: 'Lesson materials' }).getByRole('link')).toHaveCount(4);
   await expect(page.getByTestId('agent-loop-lab-page')).toBeVisible();
-  await expect(page.getByTestId('course-theory-chapter')).toContainText('Question this chapter answers');
+  await expect(page.getByTestId('lesson-mechanism')).toBeVisible();
+  await expect(page.getByTestId('lesson-prediction')).toHaveCount(0);
+  await expect(page.getByTestId('lesson-debrief')).toHaveCount(0);
+  await expect(page.getByTestId('experiment-evidence-source')).toContainText('Deterministic browser simulation');
+  await expect(page.getByTestId('course-theory-chapter')).toHaveCount(0);
   await expect(page.getByTestId('agent-course-forward-bridge')).toContainText('Next:');
 
   await page.getByTestId('agent-course-next').click();
@@ -84,22 +109,42 @@ test('canonical LLM course moves from experiment through explanation to checkpoi
   await page.goto('/learn/how-llm-works/course/prediction-goal');
 
   await expect(page.getByTestId('llm-course-page')).toBeVisible();
-  await expect(page.getByTestId('course-pipeline')).toBeVisible();
+  await expect(page.getByTestId('course-lesson-menu')).toBeVisible();
+  await expect(page.getByTestId('course-pipeline')).toHaveCount(0);
+  await page.getByTestId('course-lesson-menu').locator('summary').click();
+  await expect(page.getByTestId('course-lesson-menu')).toHaveAttribute('open', '');
+  await expect(page.getByTestId('course-lesson-menu').getByRole('link')).toHaveCount(10);
+  await page.getByTestId('course-lesson-menu').locator('summary').click();
   await expect(page.getByTestId('course-lesson-title')).toContainText('What should follow');
-  await expect(page.getByTestId('course-view-learn')).toContainText('Input');
+  await expect(page.getByRole('navigation', { name: 'Lesson materials' }).getByRole('link')).toHaveCount(4);
+  await expect(page.getByTestId('course-representation-contract')).toHaveCount(0);
+  await expect(page.getByTestId('llm-trace-ledger')).toHaveCount(0);
   await expect(page.getByRole('tab')).toHaveCount(0);
+  await expect(page.getByTestId('course-scenario')).toContainText('Unfinished prompt');
+  await expect(page.getByTestId('lesson-mechanism')).toContainText('One small prediction');
+  await expect(page.getByTestId('experiment-evidence-source')).toContainText('Choose an evidence lane');
+  await expect(page.getByTestId('prediction-source-switch')).toContainText('Teaching model');
+  await expect(page.getByTestId('prediction-source-switch')).toContainText('GPT-2');
+  await expect(page.getByTestId('prediction-source-switch')).toContainText('Bonsai');
+  await expect(page.getByTestId('course-theory-chapter')).toHaveCount(0);
 
-  await expect(page.getByTestId('course-theory-heading')).toContainText('One small prediction');
-  await expect(page.getByTestId('course-lesson-notes')).toContainText('Why this matters');
-  await expect(page.getByTestId('course-lesson-notes')).toContainText('Sources and further reading');
-  await expect(page.getByText('Teaching this lesson')).toHaveCount(0);
-  const explanationBeforeCheckpoint = await page.locator('[data-testid="course-lesson-notes"], [data-testid="course-prediction-goal-checkpoint"]').evaluateAll(([notes, checkpoint]) => Boolean(notes.compareDocumentPosition(checkpoint) & Node.DOCUMENT_POSITION_FOLLOWING));
-  expect(explanationBeforeCheckpoint).toBe(true);
+  await expect(page.getByTestId('lesson-prediction')).toHaveCount(0);
+  await expect(page.getByTestId('lesson-debrief')).toHaveCount(0);
+  const orderIsCorrect = await page.locator('[data-testid="lesson-mechanism"], [data-testid="lesson-experiment-heading"], [data-testid="course-prediction-activity"], [data-testid="course-prediction-goal-checkpoint"], [data-testid="course-lesson-notes"]').evaluateAll((elements) => elements.every((element, index) => index === elements.length - 1 || Boolean(element.compareDocumentPosition(elements[index + 1]) & Node.DOCUMENT_POSITION_FOLLOWING)));
+  expect(orderIsCorrect).toBe(true);
+  const pacing = await page.getByTestId('mandatory-lesson-spine').evaluate((element) => ({ words: (element.textContent ?? '').trim().split(/\s+/).length, screenHeights: element.getBoundingClientRect().height / window.innerHeight }));
+  expect(pacing.words).toBeLessThan(1500);
+  expect(pacing.screenHeights).toBeLessThan(15);
+
+  await page.getByText('Deep dive / reference chapter').click();
+  await expect(page.getByTestId('course-theory-chapter')).toContainText('Question this chapter answers');
   await expect(page.getByTestId('course-forward-bridge')).toContainText('Next:');
 
   await page.getByTestId('course-next').click();
   await expect(page).toHaveURL(/course\/tokenization$/);
   await expect(page.getByTestId('course-lesson-title')).toContainText('exact sequence');
+  await expect(page.getByTestId('course-scenario')).toContainText('Unfinished prompt');
+  await expect(page.getByTestId('course-scenario')).not.toContainText('tired');
 
   await page.goto('/learn/how-llm-works/course/token-embeddings');
   await expect(page.getByTestId('course-lesson-title')).toContainText('categorical ID');
@@ -138,22 +183,17 @@ test('complete materials indexes expose every lab and integrated lesson handoff'
   await expect(page.getByTestId('materials-lab-agent-evals').getByText('Integrated lesson', { exact: true })).toBeVisible();
 });
 
-test('legacy presentation and guide links resolve into lesson-owned moments', async ({ page }) => {
+test('retired presentation and guide routes return to the learning home', async ({ page }) => {
   await page.goto('/learn/how-llm-works/slides?slide=53');
-  await expect(page).toHaveURL(/\/learn\/how-llm-works\/course\/capstone\?view=present&moment=capstone\/debrief$/);
-  await expect(page.getByTestId('lesson-presentation')).toBeVisible();
-  await expect(page.getByTestId('teaching-moment-capstone/debrief')).toBeVisible();
+  await expect(page).toHaveURL(/\/learn$/);
+  await expect(page.getByTestId('learning-home-title')).toBeVisible();
 
   await page.goto('/learn/how-ai-agent-works/slides?slide=33');
-  await expect(page).toHaveURL(/\/learn\/how-ai-agent-works\/course\/capstone\?view=present&moment=capstone\/debrief$/);
-  await expect(page.getByTestId('teaching-moment-capstone/debrief')).toBeVisible();
+  await expect(page).toHaveURL(/\/learn$/);
 
   await page.goto('/learn/how-llm-works/guide?slide=1');
-  await expect(page).toHaveURL(/\/learn\/how-llm-works\/course\/prediction-goal\?view=present&moment=prediction-goal\/hook&notes=1$/);
-  await expect(page.getByTestId('presentation-notes')).toContainText('Presenter cue');
+  await expect(page).toHaveURL(/\/learn$/);
 
   await page.goto('/learn/how-ai-agent-works/guide?slide=26');
-  await expect(page).toHaveURL(/\/learn\/how-ai-agent-works\/course\/tool-boundaries\?view=present&moment=tool-boundaries\/mechanism&notes=1$/);
-  await expect(page.getByTestId('teaching-moment-tool-boundaries/mechanism')).toBeVisible();
-  await expect(page.getByTestId('presentation-notes')).toContainText('Presenter cue');
+  await expect(page).toHaveURL(/\/learn$/);
 });

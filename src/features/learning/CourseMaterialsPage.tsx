@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpenText, FlaskConical, Presentation, SquareActivity } from 'lucide-react';
+import { ArrowRight, BookOpenText, FlaskConical, SquareActivity } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../../components/ui/badge';
 import { getSectionLabs, getSectionTracks, type LearningSectionId } from './learningCatalog';
@@ -20,20 +20,17 @@ export function CourseMaterialsPage({ curriculum }: { curriculum: Curriculum }) 
     ? AGENT_COURSE_LESSONS.map((lesson) => ({ ...lesson, route: getAgentCourseRoute(lesson.id) }))
     : LLM_COURSE_LESSONS.map((lesson) => ({ ...lesson, route: getLlmCourseRoute(lesson.id) }));
   const accent = curriculum === 'agent' ? 'amber' : 'sky';
-  const teachingMomentCount = canonicalLessons.length * 4;
-  const firstMomentId = `${canonicalLessons[0].id}/hook`;
 
   return (
     <div className="pb-16" data-testid={`course-materials-${curriculum}`}>
       <header className="border-b border-stone-300 pb-8">
         <Badge variant="outline" tone="tracking">One integrated curriculum</Badge>
         <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-slate-950 md:text-6xl">{curriculum === 'agent' ? 'AI agent course materials' : 'LLM course materials'}</h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">Every lesson keeps its visual introduction, guided activity, complete chapter, practice, and checkpoint in one continuous route. Teaching moments open on demand instead of interrupting the reading surface.</p>
+        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">Every lesson moves through a concise mechanism, experiment, and checkpoint. The complete theory chapter remains available afterward as optional reference.</p>
 
-        <div className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-stone-200 bg-stone-200 sm:grid-cols-4">
+        <div className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-stone-200 bg-stone-200 sm:grid-cols-3">
           {[
             { icon: SquareActivity, value: labs.length, label: 'interactive labs' },
-            { icon: Presentation, value: teachingMomentCount, label: 'lesson-owned moments' },
             { icon: BookOpenText, value: canonicalLessons.length, label: 'long-form chapters' },
             { icon: FlaskConical, value: canonicalLessons.length, label: 'guided lesson activities' },
           ].map(({ icon: Icon, value, label }) => <div key={label} className="bg-white px-5 py-5"><Icon className={`h-5 w-5 ${accent === 'amber' ? 'text-amber-600' : 'text-sky-600'}`} /><p className="mt-4 text-3xl font-semibold text-slate-950">{value}</p><p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</p></div>)}
@@ -41,7 +38,6 @@ export function CourseMaterialsPage({ curriculum }: { curriculum: Curriculum }) 
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Link to={courseRoute} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-amber-300 px-5 text-sm font-semibold text-slate-950"><SquareActivity className="h-4 w-4" /> Start guided course</Link>
-          <Link to={`${courseRoute}?view=present&moment=${firstMomentId}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-semibold text-white"><Presentation className="h-4 w-4" /> Present the course</Link>
         </div>
       </header>
 
@@ -50,7 +46,7 @@ export function CourseMaterialsPage({ curriculum }: { curriculum: Curriculum }) 
           <div className={`border-l-4 pl-4 ${accent === 'amber' ? 'border-amber-500' : 'border-sky-500'}`}>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Canonical learner path</p>
             <h2 className="mt-2 text-2xl font-semibold text-slate-950">Course chapters</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Each route offers its hook, mechanism, practice brief, and debrief in a focused visual introduction, then continues through the experiment, complete essay, and checkpoint.</p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Each route keeps the mandatory learning loop concise and loads the long-form chapter only when the learner opens the deep dive.</p>
           </div>
           <ol className="mt-5 divide-y divide-stone-200 border-y border-stone-200">
             {canonicalLessons.map((lesson, index) => (

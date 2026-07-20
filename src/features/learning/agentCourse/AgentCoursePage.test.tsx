@@ -14,16 +14,19 @@ describe('AgentCoursePage', () => {
     renderCourse();
 
     expect(screen.getByTestId('agent-course-lesson-title')).toHaveTextContent('LLM response become an agent run');
-    expect(screen.getByTestId('lesson-visual-introduction')).toBeInTheDocument();
-    expect(screen.queryByTestId('teaching-moment-agent-loop/hook')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('open-lesson-introduction'));
-    expect(screen.getByTestId('teaching-moment-agent-loop/hook')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('introduction-next'));
-    expect(screen.getByTestId('teaching-moment-agent-loop/mechanism')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('close-lesson-introduction'));
-    expect(screen.queryByTestId('lesson-introduction-dialog')).not.toBeInTheDocument();
-    expect(screen.getByTestId('agent-loop-lab-page')).toBeInTheDocument();
+    expect(screen.getByTestId('agent-course-lesson-menu')).toHaveTextContent('The controlled loop');
+    expect(screen.getByTestId('agent-course-progress')).toHaveTextContent('0/8 complete');
+    expect(screen.getByRole('link', { name: 'Experiment' })).toHaveAttribute('href', '#agent-lesson-experiment');
+    expect(screen.getByRole('link', { name: 'Intro' })).toHaveAttribute('href', '#agent-lesson-intro');
+    expect(screen.getByRole('link', { name: 'Question' })).toHaveAttribute('href', '#agent-lesson-question');
+    expect(screen.getByRole('link', { name: 'Deep dive' })).toHaveAttribute('href', '#agent-lesson-theory');
+    expect(screen.queryByTestId('agent-course-representation-contract')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('lesson-prediction')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('lesson-debrief')).not.toBeInTheDocument();
+    expect(await screen.findByTestId('agent-loop-lab-page')).toBeInTheDocument();
     expect(screen.getAllByText(/Research three laptops under €900/).length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByTestId('course-theory-chapter')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('Deep dive / reference chapter'));
     expect(await screen.findByTestId('course-theory-chapter')).toHaveTextContent('Question this chapter answers');
 
     fireEvent.click(screen.getByTestId('agent-course-agent-loop-choice-harness'));
@@ -32,12 +35,12 @@ describe('AgentCoursePage', () => {
     expect(screen.getByTestId('agent-course-next')).toHaveAttribute('href', '/learn/how-ai-agent-works/course/subagents');
   });
 
-  test('presents lesson-owned moments without leaving the course route', () => {
+  test('ignores retired presentation query parameters and renders the lesson', async () => {
     renderCourse('/learn/how-ai-agent-works/course/agent-loop?view=present&moment=agent-loop/mechanism');
 
-    expect(screen.getByTestId('lesson-presentation')).toBeInTheDocument();
-    expect(screen.getByTestId('teaching-moment-agent-loop/mechanism')).toHaveTextContent('harness owns continuation');
-    expect(screen.getByTestId('presentation-exit')).toHaveAttribute('href', '/learn/how-ai-agent-works/course/agent-loop#lesson-visual-introduction-agent-loop');
+    expect(screen.getByTestId('agent-course-page')).toBeInTheDocument();
+    expect(await screen.findByTestId('agent-loop-lab-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('lesson-presentation')).not.toBeInTheDocument();
   });
 
   test('redirects an unknown lesson to the canonical starting point', () => {

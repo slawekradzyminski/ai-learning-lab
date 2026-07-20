@@ -6,7 +6,7 @@ Use English for all communication related to this repository. This includes assi
 
 ## Product rule
 
-Teach from the learner's goal outward. Primary slides should explain observable behavior, practical decisions, failure modes, and evidence. Keep agent-course equations out of the main path. Use focused mathematics in the LLM course only when it materially explains the mechanism being manipulated.
+Teach from the learner's goal outward. Lessons should explain observable behavior, practical decisions, failure modes, and evidence. Keep agent-course equations out of the main path. Use focused mathematics in the LLM course only when it materially explains the mechanism being manipulated.
 
 ## Repository checks
 

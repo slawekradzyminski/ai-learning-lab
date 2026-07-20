@@ -1,6 +1,6 @@
 # AI Learning Lab
 
-A standalone, instructor-friendly application for practical AI training. Its canonical ten-lesson LLM course follows one sentence through a transformer, while its canonical eight-lesson AI Agents course follows one bounded research goal through a controlled runtime. Nineteen standalone labs provide additional practice, while presentation and long-form theory are integrated into the canonical lessons instead of forming parallel courses.
+A standalone application for practical AI training. Its canonical ten-lesson LLM course follows one sentence through a transformer, while its canonical eight-lesson AI Agents course follows one bounded research goal through a controlled runtime. Nineteen standalone labs provide additional practice, and every canonical lesson keeps its experiment and long-form theory together.
 
 See the exact migrated inventory in [`docs/CONTENT_INVENTORY.md`](docs/CONTENT_INVENTORY.md). The application also exposes complete materials indexes at `/learn/how-llm-works/materials` and `/learn/how-ai-agent-works/materials`.
 
@@ -10,11 +10,10 @@ The lab is intentionally independent of the e-commerce demo that originally host
 
 - **One coherent LLM journey:** ten lessons reuse the sentence `The animal did not cross the street because it was too`, showing how its representation changes from text to tokens, vectors, contextual states, and a next-token distribution.
 - **One coherent agent journey:** eight lessons reuse a laptop-research task, showing how a goal becomes selected context, model proposals, policy decisions, bounded effects, evidence, a verified stop, and repeated evaluation.
-- **Optional visual introduction:** every canonical lesson keeps its hook, mechanism, practice brief, and debrief behind one focused modal entry point so the reading surface stays calm.
-- **One source, two rendering modes:** full-screen presentation mode renders those same lesson-owned teaching moments; it is not a detached deck with a separate sequence.
-- **Contextual presenter support:** presenter notes, prompts, and timing cues stay attached to the moment they explain and appear only when they are useful.
-- **Stable semantic navigation:** lesson and moment identifiers such as `attention/mechanism` define presentation order and return links without numeric deck positions.
-- **One learner flow:** experiment, visible plain-language explanation, misconception, checkpoint, and forward bridge stay in one coherent sequence; notation and annotated sources remain optional.
+- **One learner flow:** learn the smallest useful mechanism, run a provenance-labelled experiment, answer the checkpoint, and continue.
+- **Optional depth:** complete essays, diagrams, mathematics, exercises, glossaries, and sources load only when the learner opens the deep-dive reference chapter after the checkpoint.
+- **Explicit evidence lanes:** LLM experiments distinguish hand calculations, the inspectable GPT-2 course trace, and optional Bonsai/Ollama comparisons.
+- **Source comparison at the destination:** the first lesson can keep its stable teaching distribution or, in full-local mode, run real GPT-2 logits and live Bonsai logprobs for the same prompt.
 - **Practical first:** begin with a user goal, inspect the mechanism, try it, and verify an observable outcome.
 - **Agents without a math tax:** the primary agent course focuses on product decisions, context, boundaries, recovery, and evaluation. Equations are not required to follow the course.
 - **Focused LLM mathematics:** equations remain where they explain a concrete model mechanism such as attention, loss, or gradient flow.
@@ -51,7 +50,7 @@ VITE_DEFAULT_OLLAMA_MODEL=hf.co/prism-ml/Bonsai-27B-gguf:Q1_0
 VITE_AI_LIVE_RUNTIME_ENABLED=true
 ```
 
-When the app is served through the awesome-localstack gateway, leave `VITE_AI_API_BASE_URL` empty. Requests then use the same origin at `/api/v1/ollama/learning/*`. Set `VITE_AI_LIVE_RUNTIME_ENABLED=true` only for a build whose gateway also exposes those learning endpoints and `/api/v1/gpt2/*`; otherwise live controls stay hidden and the complete guided course remains available. The Lab validates the platform session through `/api/v1/users/me`; anonymous deep links move to the commerce login with a safe `returnTo`, then return to the original Lab route after sign-in. The existing JWT and refresh-token keys remain in `localStorage`, and credentials are never compiled into the browser bundle.
+When the app is served through the awesome-localstack gateway, leave `VITE_AI_API_BASE_URL` empty. Requests then use the same origin at `/api/v1/ollama/learning/*`. Set `VITE_AI_LIVE_RUNTIME_ENABLED=true` only for a build whose gateway also exposes those learning endpoints and `/api/v1/learning/gpt2/*`; otherwise live controls stay disabled and the complete guided course remains available. The Lab validates the platform session through `/api/v1/users/me`; anonymous deep links move to the commerce login with a safe `returnTo`, then return to the original Lab route after sign-in. The existing JWT and refresh-token keys remain in `localStorage`, and credentials are never compiled into the browser bundle.
 
 Run the opt-in browser check against a full stack with real Bonsai:
 
@@ -82,13 +81,14 @@ Before using the GHCR image in any deployment, confirm that the package is publi
 
 ## Repository boundary
 
-- `src/features/learning/` contains the canonical lesson packages, shared teaching-moment and presentation renderers, standalone labs, long-form theory, and tests.
+- `src/features/learning/` contains the canonical lesson packages, standalone labs, long-form theory, and tests.
 - `docs/CONTENT_INVENTORY.md` records the complete content and host-binding replacement contract.
-- `docs/history/` preserves the Phase 4–7 implementation plans that led to the current curriculum.
+- `docs/LEARNER_VALIDATION.md` defines the five-session observation protocol for validating pacing and representation handoffs.
+- `docs/history/` preserves implementation plans for the maintained labs and theory curriculum.
 - `src/lib/api.ts` is the deliberately small live-runtime adapter.
 - `public/learning-models/bonsai-tokenizer/` pins the browser tokenizer assets and provenance.
 - `nginx/default.conf` provides SPA routing and immutable asset caching.
 
-The public route contract is `/learn/`, so existing training links continue to work when awesome-localstack sends that path to this service.
+The public route contract is `/learn/`, so existing lesson links continue to work when awesome-localstack sends that path to this service. Retired slide, guide, and presentation URLs fall back to the learning home.
 
-Old `/slides?slide=N` and `/guide?slide=N` bookmarks remain compatibility aliases. They redirect into the closest lesson-owned teaching moment (with contextual presenter notes for guide links) and do not restore a second deck or theory sequence.
+Standalone labs, canonical course routes, embedded experiments, and reference chapters are split into on-demand browser chunks. The Mermaid renderer is intentionally large but is fetched only when an opened chapter actually renders a diagram.
